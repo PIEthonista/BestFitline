@@ -1,0 +1,3269 @@
+Alright, java is quite simple, but not very similar to Python here...
+Learn Java: https://docs.oracle.com/javase/tutorial/
+
+If you're using atom text editor, you can use the find tool to search for specific topics, most of them have a tag prepended: ~!topic
+Both ~!solve and ~!? needs further studying and solving.
+HTML ~!color picker: https://www.w3schools.com/colors/colors_picker.asp?colorhex=FA8072
+             viewer: https://www.w3schools.com/colors/colors_names.asp
+   Characters Lists: https://www.w3schools.com/charsets/default.asp
+
+To start of:
+-------------------------------------------------------------------
+
+    //comments
+    import <libs>;
+    public class <Class_Name> {
+        public/private static void main(String[] args) {
+            <attributes>;
+            <data>;
+             <methods>;
+        }
+    }
+
+    Class Name should always start with an uppercase letter. (encouraged, if you don't want also can)
+    (since 'non-primitive' lol, like String)
+    The name of the java file must match the Class Name.
+
+
+============================================================================================================================================ ~!RESERVED WORDS
+// ~!keywords
+
+abstract    continue    for            new            switch
+assert***    default        goto*        package        synchronized
+boolean        do            if            private        this
+break        double        implements    protected    throw
+byte        else        import        public        throws
+case        enum****    instanceof    return        transient
+catch        extends        int            short        try
+char        final        interface    static        void
+class        finally        long        strictfp**    volatile
+const*        float        native        super        while
+
+I
+Some explained meanings:
+1. 'new' : It creates a new Java obj & allocates memory for it on the heap. //~!new
+           Also used for array creation (array are also objects).
+2. 'super' : A reference variable that is used to refer parent class objects. //~!super
+             Can be used to call parent class' variables and methods. i.e. super.method()
+3. 'super()' : A reference variable that is ONLY used to refer parent class constructors. //~!super(), i.e. super(params..)
+
+============================================================================================================================================ ~!ACCESS ~!MODIFIERS
+There are two groups of modifiers:
+    - Access Modifiers: controls the access level
+    - Non-Access Modifiers: do not control access level, but provides other functionality
+
+
+====== ACCESS MODIFIERS ======
+// ~!public ~!default ~!private ~!protected
+
+For classes:
+
+    public  : The class is accessible by any other class.
+    default : The class is only accessible by classes in the same package. This is used when you don't specify
+              a modifier. ref: tag_packages
+       + private (Nested Classes +) : ONLY accessible within itself, or top-level class (OuterClass) of nested classes.
+       + protected (Nested Classes +) : Code of inner class is accessible in the same package & subclasses.
+
+
+For attributes, methods and constructors: (p.o.d.i)
+
+    public    : The code is accessible for all classes.
+    private   : The code is only accessible within the declared class. (not even child class can access, use getter setter, see OOP tag_encapsulation)
+    default   : The code is only accessible in the same package. This is used when you don't specify a modifier.
+    protected : The code is accessible in the same package and subclasses (inheritance classes).
+
+
+
+====== NON-ACCESS MODIFIERS ======
+// ~!final ~!abstract ~!transient ~!synchronized ~!volatile
+
+For classes:
+
+    final    : The class cannot be inherited by other classes.
+    abstract : The class cannot be used to create objects (To access an abstract class, it must be inherited by another class.)
+       + static (Nested Classes +) : A 'static' inner class can be accessed directly without first creating an object of the outer class.
+
+
+For attributes and methods:
+
+    final        : Attributes and methods cannot be overridden/modified.
+    static       : Attributes and methods belongs to the class, rather than an object (Math.abs(x)) (memory location, ref: tag_static)
+                   (Accessed without obj creation)
+    abstract     : Can only be used in an abstract class, and can ONLY be used on METHODS. The method does not have a body,
+                     for example 'abstract void run();'. The body is provided by the subclass (inherited).
+    transient    : Attributes and methods are skipped when serializing the object containing them.
+    synchronized : Methods can only be accessed by one thread at a time.
+    volatile     : The value of an attribute is not cached thread-locally, and is always read from the "main memory".
+
+ref: modifiers.jpg
+
+
+
+------ ABSTRACT ------
+// Code from filename: Main.java
+// abstract class
+abstract class Main {
+    public String fname = "John";
+    public int age = 24;
+    public abstract void study(); // abstract method
+}
+
+// Subclass (inherit from Main)
+class Student extends Main {
+    public int graduationYear = 2018;
+    public void study() { // the body of the abstract method is provided here
+        System.out.println("Studying all day long");
+  }
+}
+// End code from filename: Main.java
+
+
+// Code from filename: Second.java
+class Second {
+    public static void main(String[] args) {
+        // create an object of the Student class (which inherits attributes and methods from Main)
+        Student myObj = new Student();
+
+        System.out.println("Name: " + myObj.fname);
+        System.out.println("Age: " + myObj.age);
+        System.out.println("Graduation Year: " + myObj.graduationYear);
+        myObj.study();        // call abstract method
+  }
+}
+
+
+
+============================================================================================================================================ ~!STATIC
+
+static: Used with methods, variables (class variables/attributes), blocks({..}), Nested class.
+
+It mainly deals with the memory location management. Say a 'static' class method, it can be
+directly called with the class without initialising the object. (i.e. Math.pow(x,y))
+This is because the method/attribute/block has the same memory location as the class, they're
+directly linked to the class. The static variable gets memory only once in the class area at the
+time of class loading. Which means that in order to use them, you do not need to create a
+memory location for them (the objects), aka initialising (i.e. Scanner obj = new Scanner(params); ).
+To boil down, it makes your program memory efficient (i.e., it saves memory).
+
+
+PS: Anything 'static' in java will have a memory location, BUT JUST ONE, WITH EVERY OTHER RELATED CODE
+    LINKED TO IT, which means that it will not have to go through the initialisation process.
+    Anything 'non-static' will have to go through the initialisation process to get a memory location
+    before being able to run.
+
+NOTE: MAIN POWERS OF 'STATIC'
+    - can be called without obj creation, since in the storage memory, they're bound to classes instead of obj.
+    - There only exist ONE copy of the static variable for all objects (can be used to communicated between obj of same class)
+NOTE: MAIN RESTRICTIONS OF 'STATIC'
+    - Static methods can not use non-static data member or call non-static method directly. (must go through a bridge.)
+    - 'this' and 'super' cannot be used in static context. ('this' & 'super' refers to objects)
+
+#ref: static - memory location.png
+
+
+
+1. STATIC ATTRIBUTES
+    We said that 'static' things only get memory once/ only one memory. Say an obj's code
+    have it's value changed, then it will to change, but at the same memory location.
+
+    []    class Counter2{
+    []        static int count=0;//will get memory only once and retain its value
+    []
+    []            Counter2(){
+    []                count++;//incrementing the value of static variable
+    []                System.out.println(count);
+    []            }
+    []
+    []        public static void main(String args[]){
+    []            //creating objects
+    []            Counter2 c1=new Counter2();
+    []            Counter2 c2=new Counter2();
+    []            Counter2 c3=new Counter2();
+    []            }
+    []    }
+    []
+    []    >>> 1
+    []    >>> 2
+    []    >>> 3
+
+
+2. STATIC METHODS
+    There are two main restrictions for the static method. They are:
+        - The static method can not use non-static data member or call non-static method directly. (must go through a bridge.)
+        - 'this' and 'super' cannot be used in static context.
+
+
+3. STATIC ~!BLOCKS
+    First of all, initializer blocks are codes located in blocks{} within the class definition/declaration. They are
+    used to 'do something' before ANY init method / constructors of the class is called. A class can have any number
+    of static initialization blocks, and they can appear anywhere in the class body. The runtime system guarantees
+    that static initialization blocks are called in the order that they appear in the source code.
+    A static block helps to initialize the static data members, just like constructors help to initialize instance
+    members (aka attributes). Static blocks CAN'T work with non-static things.
+
+    NOTE: In nested classes, for a 'STATIC' inner class that does not require initialisation, the static block of the
+          inner class will also run, ONLY before anything of the 'STATIC' inner class is called.
+
+    []    public class Demo {
+    []        static int a;  <--static attributes
+    []        static int b;
+    []
+    []        static {       <--static block
+    []            a = 10;
+    []            b = 20;
+    []         }
+    []        public static void main(String args[]) {
+    []            System.out.println("Value of a = " + a);
+    []            System.out.println("Value of b = " + b);
+    []         }
+    []    }
+    []    >>> Value of a = 10
+    []    >>> Value of b = 20
+
+
+
+============================================================================================================================================ ~!MAIN()
+Just some Q&A about the main() method..
+
+1. Why is java 'main()' method public?
+    ANS: We know that anyone can access/invoke a method having public access specifier. The main method is public
+    in Java because it has to be invoked by the JVM. So, if main() is not public in Java, the JVM can't call it.
+    Thus, program can't be executed.
+
+2. Why is the Java 'main' method static?
+    ANS: In any Java program, the main() method is the starting point from where compiler starts program execution.
+    So, the compiler needs to call the main() method. If the main() is allowed to be non-static, then while calling
+    the main() method JVM has to instantiate its class, in other words, it requires an object. While instantiating
+    it has to call the constructor of that class, there will be ambiguity if the constructor of that class takes an argument.
+    Static method of a class can be called by using the class name only without creating an object of a class.
+    The main() method in Java must be declared public, static and void. If any of these are missing, the Java program
+    will compile but a runtime error will be thrown.
+
+3. Why does java 'main()' method have a return type of void?
+    ANS: Java main method doesn't return anything to anything, its function is just to contain and run the program,
+    that's why it's return type is void. This has been done to keep things simple because once the main method is finished
+    executing, java program terminates. So there is no point in returning anything, there is nothing that can be done
+    for the returned object by JVM.
+
+4. Can you rename the 'main()' method?
+    ANS: No, you can't rename it. main() is a built-in name in java that JVM will find and call in order to execute
+    your program.
+
+5. What exactly is String [] args?
+    ANS: It stores Java command line (passed in) arguments and is an array of type java.lang.String class. Here, the
+    name of the String array is args but it is not fixed and user can use any name in place of it. Can be other data
+    type array instead of String array only. (For main(), its recommended to use String[]varName)
+
+    >>> javac Main.java
+    >>> java Main 1 2 3 4 5               <-- See tag_NonScannerInput
+    []    public class Main{
+    []        public static void main(String[] args) {
+    []            for (String elem : args)
+    []                System.out.println(elem);
+    []        }
+    []    }
+    >>> 1,2,3,4,5
+
+
+============================================================================================================================================ ~!DATA TYPES
+// ~!datatypes ~!var
+                                Size
+   byte var1 = 100;          // 1 byte    whole numbers from -128 to 127
+  short var2 = 10000;        // 2 bytes   whole numbers from -32,768 to 32,767
+    int var3 = 5;            // 4 bytes   whole numbers from -2,147,483,648 to 2,147,483,647
+   long var4 = 1000000000L;  // 8 bytes   whole numbers from -9,223,372,036,854,775,808 to 9,223,372,036,854,775,807
+  float var5 = 3.1425f;      // 4 bytes   fractional numbers. Sufficient for storing 6 to 7 decimal digits
+ double var6 = 1.23456789d;  // 8 bytes   fractional numbers. Sufficient for storing 15 decimal digits
+boolean var7 = true;         // 1 bit     true or false
+   char var9 = 'A';          // 2 bytes   a single character/letter or ASCII values (i.e. char a = 65; //'A')
+String var10 = "blablabla";  // ???       Non-Primitive, refers to an object. All above are Primitive data types.
+final double Pi = 3.142;     // Constants: Unchangable values once assigned. Throws Error when updated/reassigned.
+^^^^^
+      *L/f/d are used with long/float/double
+
+NOTE: var name = AnyDataTypeValue; (makes it easy: do not have to pre-declare data type, data type is initialised by type of value assigned)
+                                   (can also be used for containing inputted values, but only of the same data type, old value will be overridden.)
+                                   NOTE: value must be assigned immediately.
+                                   []    var n = 100;  // good code
+                                   []    var n;        // throws error
+                                   []    n=100;
+
+The main difference between ~!primitive and ~!non-primitive data types are:
+    - Primitive types are predefined (already defined) in Java. Non-primitive types are created by the programmer and
+      is not defined by Java (except for String).
+    - Primitive data types are like data values (NOTE: requires wrapper class to be an obj), Non-Primitive data types are actually objs.
+    - Non-primitive types can be used to call methods to perform certain operations, while primitive types cannot.
+    - A primitive type has always a value, while non-primitive types can be null.
+    - A primitive type starts with a lowercase letter, while non-primitive types starts with an uppercase letter,
+      just like defining classes, you start with an UPPERCASE letter (i.e. public class Trial {...} )
+      *Same as Python object & classes.
+    - The size of a primitive type depends on the data type, while non-primitive types have all the same size.
+Examples of non-primitive types are Strings, Arrays, Classes, Interface, etc.
+
+
+
+================================================================================ ~!TYPE CASTING
+// ~!typecasting ~!casting
+
+Type casting is when you assign a value of one primitive data type to another type.
+In Java, there are two types of casting:
+
+    1. Widening Casting (automatically) - converting a smaller type to a larger type size
+      byte -> short -> char -> int -> long -> float -> double  (BS CILF D)
+
+      []  int myInt = 9;
+      []  double myDouble = myInt; // Automatic casting: int to double 9.0
+      * can also be used as: (double)int
+
+    2. Narrowing Casting (manually) - converting a larger type to a smaller size type
+      double -> float -> long -> int -> char -> short -> byte
+
+      []  double myDouble = 9.78d;
+      []  int myInt = (int) myDouble; // Manual casting: double to int 9
+
+
+
+================================================================================ ~!WRAPPER CLASSES
+// ~!wrapperclasses ~!wrapclasses
+
+Wrapper classes provide a way to use primitive data types (int, boolean, etc..) as objects.
+(primitive data types usually treated as 'data type values')
+The table below shows the primitive type and the equivalent wrapper class:
+
+Primitive Data Type    Wrapper Class
+
+               byte    Byte
+              short    Short
+                int    Integer
+               long    Long
+              float    Float
+             double    Double
+            boolean    Boolean
+               char    Character
+
+          *String is already an obj.
+
+Sometimes you must use wrapper classes, for example when working with Collection objects, such
+as ArrayList, where primitive types cannot be used (the list can only store objects):
+
+Example
+[]    ArrayList<int> myNumbers = new ArrayList<int>();         // Invalid - stores objs not data values
+[]    ArrayList<Integer> myNumbers = new ArrayList<Integer>(); // Valid
+
+Wrapper Objects are treated regularly like other data type values.
+
+[]    Integer myObj = 5;
+[]    System.out.println(myObj);
+[]    >>> 5
+
+Or you can use certain methods to retrieve the objects' information (values), since you are working with objs.
+For example, the following methods are used to get the value associated with the corresponding wrapper object:
+intValue(), byteValue(), shortValue(), longValue(), floatValue(), doubleValue(), charValue(), booleanValue().
+
+[]    Integer myObj = 5;
+[]    System.out.println(myObj.intValue());
+[]    >>> 5
+
+obj.toString();
+Returns a string 'textual representation' of the object that should be a concise but informative representation
+that is easy for a person to read. It is recommended that all subclasses override this method.
+
+[]    Integer myInt = 100;                  // wrapper class objs
+[]    String myString = myInt.toString();   // string value "100"
+
+
+
+============================================================================================================================================ ~!ESCAPE CHARS
+not very much compared to Python...??
+
+\n    newline
+\t    horizontal tab (8 spaces 01234567)
+\b    backspace (cursor moves left by 1 unit, no deleting of printed statement)
+\r    carriage return (cursor moves to beginning of line, no deleting of printed statement)
+\"    double quote
+\'    single quote
+\\    backslash
+
+
+============================================================================================================================================ ~!OPERATORS
+
+Arithmetic    +    sum
+              -    subtract
+              *    multiply
+              /    quotient
+              %    remainder
+
+Relational    ==   equals/comparison
+              !=   does not equal
+              >    larger
+              >=   larger or equal to
+              <    smaller
+              <=   smaller or equal to
+
+Logical       ||   OR i.e. (9==3||3!=9): (false||true): true
+              &&   AND  i.e. (9==3&&3!=9): (false&&true): false
+              !    NOT  i.e. (!true): false
+            *can be treated as regular mathematical methods, just that class=boolean
+
+Bitwise??
+
+=== Postfix Operator ===
+n++ Current n++ call uses the original value, only incrememts by 1 in the next call of n
+n-- Current n-- call uses the original value, only decrements by 1 in the next call of n
+
+=== Unary Operator ===
+++n Increments the number & uses it
+--n Decrements the number & uses it
+
+[]    int n1 = 3;
+[]    int n2 = n1++;
+[]    System.out.println(n2);
+[]    System.out.println(n1);
+[]    >>> 3
+[]    >>> 4
+
+
+~!Math Methods (i.e. Math.max(x,y))
+Ref: https://www.w3schools.com/java/java_ref_math.asp
+NOTE: optional import java.lang.Math;
+               import static java.lang.Math;
+see tag_staticimport
+
+
+=== Operator Precedence ===
+Operators                                    Precedence
+postfix increment and decrement                ++ --
+prefix increment and decrement, and unary    ++ -- + - ~ !
+multiplicative                                * / %
+additive                                    + -
+shift                                        << >> >>>
+relational                                    < > <= >= instanceof
+equality                                    == !=
+bitwise AND                                    &
+bitwise exclusive OR                        ^
+bitwise inclusive OR                        |
+logical AND                                    &&
+logical OR                                    ||
+ternary                                        ? :
+assignment                                    = += -= *= /= %= &= ^= |= <<= >>= >>>=
+
+
+============================================================================================================================================ ~!STRING
+// ~!str
+--- Basic ---
+str.length()
+str.equals(str2)      # DO NOT use == when comparing strings
+str.equalsIgnoreCase(str2)
+
+[]    Fact about '==' vs '.equals()' :
+[]        String is not a primitive data type in Java. It requires object creation.
+[]        The '==' operator compares the objects' address.
+[]        The '.equals()' method compares the objects' content value.
+[]        In simple words, == checks if both objects point to the same memory location
+[]        whereas .equals() evaluates to the comparison of values in the objects.
+[]        To produce consistent results, it is highly recommended to use the '.equals()' method.
+
+str1.compareTo(str2)              #Lexicographic ordering used to order alphabet according to ASCII ordering
+str1.compareToIgnoreCase(str2)
+                      Return -val if str1 comes b4 str2
+                      Return +val if str2 comes b4 str1
+                      Return 0 if str1 == str2
+str.charAt(ind)
+
+--- String Slicing ---
+str.substring(int BeginInd, int EndInd);
+Begin Index : Inclusive
+End Index : Exclusive     (If not specified, selects all from BeginInd to end)
+returns specified substring.
+
+[]    String str = "Welcome to geeksforgeeks";
+[]    System.out.println(str.substring(11));       <--from 11 to all
+[]    System.out.println(str.substring(11,16));    <--from 11 to 15
+[]    >>> geeksforgeeks
+[]    >>> geeks
+
+[]    String input = "1,2,3,4,5";
+[]    String [] arr = input.split(",");
+[]    // {"1", "2", "3", "4", "5"}
+
+--- Obj To String ---
+obj.toString();
+Returns a string 'textual representation' of the object that should be a concise but informative
+representation that is easy for a person to read. It is recommended that all subclasses override
+this method.
+[]    Integer myInt = 100;                  // wrapper class objs
+[]    String myString = myInt.toString();   // string value "100"
+
+--- String to Num ---
+[]    String str = "25";
+[]    try{
+[]        int number = Integer.parseInt(str);
+[]        double dou = Double.parseDouble(str);
+[]        System.out.println(number); // output = 25
+[]    }
+[]    catch (NumberFormatException e){
+[]        e.printStackTrace();
+[]    }
+
+--- A Few Useful Methods ---
+String name = "    Bro   ";
+boolean re = name.equals("Bro");                  >>> false
+boolean re = name.equalsIgnoreCase("    bro   "); >>> true
+    int re = name.length();                       >>> 10
+   char re = name.charAt(4);                      >>> B
+    int re = name.indexOf("ro", 3);               >>> 5        <--Returns starting position of specified str, search starting from 3 (skips "ro" before 3)
+boolean re = name.isEmpty();                      >>> false
+ String re = name.toUpperCase();
+ String re = name.toLowerCase();
+ String re = name.trim();                         >>> "Bro" (only spaces in front & behind string)
+ String re = name.replace(oldChar, newChar);
+
+More String Methods: https://docs.oracle.com/en/java/javase/16/docs/api/java.base/java/lang/String.html
+                     https://www.w3schools.com/java/java_ref_string.asp
+
+
+============================================================================================================================================ ~!CHARACTER
+
+char x = str.charAt(index_pos);
+boolean b2 = Character.isLowerCase(ch2);
+boolean b1 = Character.isUpperCase(ch1);
+             ^^^^^^^^^             ^^^
+             Wrapper Cls           char
+
+============================================================================================================================================ ~!OUTPUT
+// ~!print() ~!println()
+System.out.print("text");    regularly print text without newline.
+System.out.println("text");     prints text and adds a newline char "\n" after text.
+
+    i.e.
+    []    System.out.println("ABC\nBCD");
+    []    Result:
+    []        ABC\n  <-- \n from added \n
+    []        BCD\n  <-- \n from println
+
+*both print functions can be used in input statements
+    i.e.
+    []    System.out.print("Enter num(s): ");
+    []    int num1 = in.nextInt();
+    []  int num2 = in.nextInt();
+    []  int num3 = in.nextInt();
+    []    ....
+    []    Result:
+    []        Enter num1: 10 11 12
+
+    i.e.
+    []    System.out.println("Enter num1: ");
+    []    int num1 = in.nextInt();
+    []    ....
+    []    Result:
+    []        Enter num1:
+    []        <10>
+
+
+================================================================================ ~!PRINTF()
+System.out.printf("format string", obj/var/val)
+
+    % [flags] [width] [precision] [conversion-character]
+
+    [flags]
+    adds an effect to output based in flags added
+    + : output a plus (+) or minus (-) sign for a numeric value (i.e. +3.142)
+    0 : numberic values are zero-padded (i.e. &05f 0002.5) (adds 0 to the left
+        of num with specified width. Does not work with left-justify)
+    , : comma grouping separator if numbers > 1000 (i.e. 1,000,000)
+    - : left justify
+
+    [width] &__d
+    Min number of characters to be written as output:
+     int i.e. %10s    ------exmp right-justify
+    -int i.e. %-10s   exmp------ left-justify
+                      1234567890
+
+    [precision] &.2f
+    sets number of digits of precision when outputting floating-point values
+    i.e. %.2f  3.14
+    i.e. %.3f  3.142
+
+    [conversion character]
+    %d Decimal Integer
+    %b boolean
+    %c char
+    %s String
+    %f fixed-point floating point
+    %g general floating point
+    %e E-notation float (1.08e-10)
+    %% '%' character
+
+
+
+i.e. System.out.printf("The current value of APL is %+,030.5f \n NEWLINE", 3142536.45856428329478237);
+                                                     ||| | |
+                                                     ||| | Precision
+                                                     ||| Width
+                                                     ||Flag: zero-padding
+                                                     |Flag: , separator
+                                                     Flag: +/- for +/- values
+>>> The current value of APL is +000000000000003,142,536.45856 \\end
+>>>  NEWLINE
+                                123456789012345678901234567890
+                                         ^         ^         ^
+
+i.e. System.out.printf("The current value of APL is %+,-30.5f", 3142536.45856428329478237);
+>>> The current value of APL is +3,142,536.45856              \\end
+                                123456789012345678901234567890
+                                         ^         ^         ^
+
+i.e. System.out.printf("Today's temp is %+.2fC, and it's the %dth day of the week.", 27.1234, 5)
+>>> Today's temp is +27.12C, and it's the 5th day of the week.}
+
+More on formatting: https://docs.oracle.com/javase/tutorial/java/data/numberformat.html
+
+
+============================================================================================================================================ ~!INPUT
+// ~!Scanner
+
+[]    import java.util.Scanner;  <-- direct imports Scanner class from lib
+[]    import java.util.*;        <--slower: imports whole util subclass
+[]
+[]    public class <project_title> {
+[]         public static void main(String[] args) {
+[]             Scanner <input_object> = new Scanner(System.in);  <-- create instance of input object
+[]
+[]             //(can be used for multiple input statements. reason: an object can hold multiple data,
+[]             // methods and attributes)
+[]
+[]                 System.out.print/println("Enter.....");
+[]            <class> <var name> = <input_object>.next<class fx>();  <--read input
+[]                i.e. int num1 = in.nextInt();
+[]
+[]           <attributes>;
+[]              <data>;
+[]           <methods>;
+[]        }
+[]    }
+
+
+[Category]       [class]   [input function]    [conversion & other methods??]
+-------------------------------------------------------------------
+Boolean:         boolean    <in>.nextBoolean();
+
+Character:       char       <in>.next();             reads only next char i.e. "rfc" of
+                                                     "rfc arfc werf erfc", also read NUMS.
+                            <in>.next().charAt(0);   reads char at index pos 0 of input.
+
+Integer:         byte       <in>.nextByte();
+                 short      <in>.nextShort();
+                 int        <in>.nextInt();
+                 long       <in>.nextLong();
+
+Floating-Point:  float      <in>.nextFloat();
+                 double     <in>.nextDouble();
+
+Non primitive:   String     <in>.nextLine();  reads whole line i.e. "rfc arfc werf erfc",
+                                              also read NUMS. (Treats 'Enter' as '\n')
+
+[]    System.out.print("Enter num: ");
+[]    int n = in.nextInt();              <-- when you press 'enter' after typing the num,
+[]    in.nextLine();                     <-- the 'enter' or '\n' goes here (remove enter buffer)
+[]    System.out.println("Enter name: ");
+[]    String name = in.nextLine();
+
+[]    System.out.print("Enter num(s): ");   <-- multiple values entered in one line
+[]    int num1 = in.nextInt();
+[]    int num2 = in.nextInt();
+[]    int num3 = in.nextInt();
+[]    ....
+[]    >>> Enter num1: 10 11 12
+
+
+    === data.txt ===
+    line 1 text
+    line 2 text
+    3
+    4
+    5           <-- invisible \n char here
+    line 5 text
+    line 6 text
+    7
+    8
+    9           <-- invisible \n char here
+
+[]    while(in.hasNextLine()){
+[]        System.out.println(in.nextLine());
+[]        System.out.println(in.nextLine());
+[]        System.out.println(in.nextInt());
+[]        System.out.println(in.nextInt());
+[]        System.out.println(in.nextInt());
+[]        in.nextLine();
+[]        System.out.println("===============");
+
+
+
+
+
+================================================================================ ~!NON-SCANNER INPUT
+// ~!nonscannerinput ~!javac
+NOTE: Another method of input is by not using Scanner, but treating main() as a method by passing in the required args.
+      To achieve this, do like below.
+      >>> javac Main.java      //compile
+      >>> java Main 1 2 3 4    //run it and pass in args as if it is a part of a program.
+
+
+
+============================================================================================================================================ ~!IF / WHILE / DO / FOR / FOR-EACH
+// ~!if ~!else ~!while ~!do ~!dowhile ~!for ~!foreach ~!labels ~!loops
+
+1. IF / ELSE IF /ELSE
+    []    if (condition1) {
+    []        // code block;
+    []    } else if (condition2) {
+    []        // code block;
+    []    } else {
+    []        // code block;
+    []    }
+
+
+2. WHILE-LOOP
+    []    while (i<6) {
+    []        // code block;
+    []    }
+
+
+3. THE ~!DO/WHILE LOOP
+    The do/while loop is a variant of the while loop. This loop will execute the code block once, before
+    checking if the condition is true, then it will repeat the loop as long as the condition is true.
+
+    Syntax
+    []    do {
+    []      // code block to be executed;
+    []    }
+    []    while (condition);
+
+    i.e.
+    []    int i = 0;
+    []    do {
+    []      System.out.println(i);
+    []      i++;
+    []    }
+    []    while (i < 5);
+    []    >>> 0,1,2,3,4
+
+
+4. FOR-LOOP
+    Syntax
+
+    []    for (statement 1; statement 2; statement 3) {
+    []      // code block to be executed
+    []    }
+
+    Statement 1 is executed (one time) before the execution of the code block.
+    Statement 2 defines the condition for executing the code block. NOTE:can be empty for infinite loop i.e. for(int i=0; ; i++)
+    Statement 3 is executed (every time) after the code block has been executed.
+
+    i.e.
+    []    for (int i = 0; i < 5; i++) {
+    []      System.out.println(i);
+    []    }
+    []    >>> 0,1,2,3,4
+
+
+5. FOR-EACH LOOP (Array)
+    There is also a "for-each" loop, which is used exclusively to loop through elements in an array,
+    just like in Python (for i in arr: print(i))
+
+    Syntax
+    []    for (whats_inside_array var : arrayName) {
+    []      // code block to be executed
+    []    }
+
+    i.e.
+    []    String[] cars = {"Volvo", "BMW", "Ford", "Mazda"};
+    []    for (String i : cars) {
+    []      System.out.println(i);
+    []    }
+    []    >>> Volvo, BMW, Ford, Mazda
+
+    i.e.
+    []  int[][] num  = {{1,2,3,4},{5,6,7}};
+    []  for (int[] i : num) {
+    []      for (int j : i){
+    []          System.out.println(j);
+
+6.  LABELS
+    You can assign a label to the break/continue statement and can use that label with the break/continue statement.
+    NOTE: breaks/continues labeled loops. FOR-Loops ONLY.
+    []    lbl:
+    []    for (int i=0; i<4; i++){
+    []        for (int j=0; j<5; j++){
+    []            if (j==2){
+    []                continue lbl;
+    []            }
+    []            System.out.println(i + " " + j);
+    []        }
+    []    }
+    []    >>> 0 0
+    []    ... 0 1
+    []    ... 1 0
+    []    ... 1 1
+    []    ... 2 0
+    []    ... 2 1
+    []    ... 3 0
+    []    ... 3 1
+
+
+
+============================================================================================================================================ ~!SHORT HAND IF / TERNARY OPERATOR
+// ~!shorthandif ~!ternaryoperator
+
+Short Hand If...Else (Ternary Operator)
+There is also a short-hand if else, which is known as the ternary operator because it consists of three operands.
+It can be used to replace multiple lines of code with a single line. It is often used to replace simple if else statements:
+
+Syntax
+
+[]    variable = (condition) ? TrueValue : FalseValue;
+
+i.e.
+[]    int time = 20;
+[]    String result = (time < 18) ? "Good day." : "Good evening.";
+[]    System.out.println(result);
+[]    >>> Good evening.
+
+instead of
+
+[]    int time = 20;
+[]    if (time < 18) {
+[]      System.out.println("Good day.");
+[]    } else {
+[]      System.out.println("Good evening.");
+[]    }
+[]  >>> Good evening.
+
+
+
+============================================================================================================================================ ~!SWITCH STATEMENT
+// ~!case ~!switch
+Use the switch statement to select one of many code blocks to be executed.
+
+Syntax
+
+[]    switch (expression) {
+[]      case val1:
+[]        // code block;
+[]        break;
+[]      case val2: case val3:     <-- can have same operation for diff case
+[]        // code block;
+[]        break;
+[]      default:
+[]        // code block;
+[]    }
+
+This is how it works:  The switch expression is evaluated once.
+                       The value of the expression is compared with the values of each case.
+                       If there is a match, the associated block(s) of code is executed.
+                       The break and default keywords are optional, break is to save time by
+                         ignoring other cases by jumping out of the switch block.
+                       'default' is more like an 'else' statement, executed when no case matches.
+                         *default IS the LAST CASE, doesn't require 'break'.
+
+[]    int day = 4;
+[]    switch (day) {
+[]      case 6:
+[]        System.out.println("Today is Saturday");
+[]        break;
+[]      case 7:
+[]        System.out.println("Today is Sunday");
+[]        break;
+[]    case 8: case 9:                             <-- NOTE: optional multiple cases
+[]      System.out.println("How high are you?");
+[]      break;
+[]      default:
+[]        System.out.println("Looking forward to the Weekend");
+[]    }
+[]    // Outputs "Looking forward to the Weekend"
+
+
+============================================================================================================================================ ~!BREAK / CONTINUE
+// ~!break ~!continue
+
+break: break out of current loop (1 layer)
+continue: break out of/ends current iteration, skips to next iteration.
+
+[]    for (int i = 0; i < 10; i++) {
+[]      if (i == 4) {
+[]        break;
+[]      }
+[]      System.out.println(i);
+[]    }
+[]    >>> 0,1,2,3
+
+[]    for (int i = 0; i < 10; i++) {
+[]      if (i == 4) {
+[]        continue;
+[]      }
+[]      System.out.println(i);
+[]    }
+[]    >>> 0,1,2,3,5,6,7,8,9
+
+
+
+============================================================================================================================================ ~!ARRAY
+Declaration & Assignment
+[]  dataType [] arrayName = new dataType [size];
+[]  dataType [] arrayName = { elem1, elem2, ... };
+             ^ Array Dimension Declaration
+
+
+Default Value when Created through size declaration:
+Boolean: false
+String: Null
+Integer: 0
+
+
+i.e.
+[]  String [] ar1 = {"John", "Bob", "Casey"};
+
+---------------------------------------------------------ACCESS & EDIT
+Access: arrayName[index]
+Edit  : arrayName[index] = newValue;
+
+String input = "1,2,3,4,5";
+String [] arr = input.split(",");
+// {"1", "2", "3", "4", "5"}
+
+---------------------------------------------------------LOOP
+[]    for (int i=0; i<ar1.length; i++) {
+[]      System.out.println(arr[i]);
+[]    }
+
+or
+
+[]    for (String i : ar1) {
+[]      System.out.println(i);
+[]    }
+#ref: for-each loop
+
+---------------------------------------------------------CLONE (OBJECT)
+int [] arr1 = {1,2,3};
+int [] arr2 = arr1;         <-- refers to same object/changes done to arr2 will affect arr1
+int [] arr3 = arr1.clone(); <-- cloned new object
+arr2[1]=100;
+//print
+// arr1 = {1, 100, 3}
+// arr2 = {1, 100, 3}
+// arr3 = {1, 2, 3}
+
+
+---------------------------------------------------------STORING OBJECTS
+
+Food [] refrigerator = new Food[size];
+Food obj1 = new Food(args);
+...
+refrigerator[0] = obj1;
+...
+
+================================================================================ ~!MULTI-DIMENSIONAL ARRAY
+// ~!multidimarray ~!multidimensionalarray
+i.e.
+2-Dim Array: int[][] myNums = { {1,2,3,4}, {5,6,7} };
+             int[][] myNums = [outerDim][innerDim];
+                              [row][col]
+
+---------------------------------------------------------ACCESS
+myNums[index1][index2]
+
+---------------------------------------------------------LOOP
+[]    int[][] myNumbers = { {1, 2, 3, 4}, {5, 6, 7} };
+[]    for (int i = 0; i < myNumbers.length; ++i) {
+[]      for(int j = 0; j < myNumbers[i].length; ++j) {
+[]        System.out.println(myNumbers[i][j]);
+[]      }
+[]    }
+[]    >>> 1,2,3,4,5,6,7
+
+or
+
+[]    int[][] num  = {{1,2,3,4},{5,6,7}};
+[]    for (int[] i : num) {
+[]        for (int j : i){
+[]            System.out.println(j);
+#ref: for-each loop
+
+
+
+
+============================================================================================================================================ ~!ARRAYLIST
+The ArrayList class is a resizable array, which can be found in the java.util package. The difference between
+a built-in array and an ArrayList in Java, is that the size of an array cannot be modified (if you want to add
+or remove elements to/from an array, you have to create a new one). While elements can be added and removed from
+an ArrayList whenever you want. NOTE: ArrayList stores objects, thus a wrapper class is required for Primitive
+Data Types (see tag_wrapperclasses). The declaration syntax is also slightly different:
+
+[]    import java.util.ArrayList;                           // import the ArrayList class
+[]    ArrayList<Integer> cars = new ArrayList<Integer>();   // Create an ArrayList object
+[]               ^ wrapper class
+
+
+Some example code and some methods of ArrayList class objs.
+More at: https://docs.oracle.com/javase/8/docs/api/java/util/ArrayList.html
+
+[]    import java.util.ArrayList;
+[]    public class Main {
+[]        public static void main(String[] args) {
+[]            ArrayList<String> cars = new ArrayList<String>();       // creates 'cars' ArrayList
+[]
+[]            cars.add("Volvo");                                      // adds values (auto wrapped by wrapper class)
+[]            cars.add("BMW");
+[]            cars.add("Ford");
+[]            cars.add("Mazda");
+[]
+[]            cars.add(0, "Lykan");                                  // adds value to specified index position, pushes others behind
+[]
+[]            System.out.println(cars);                               >>> [Volvo, BMW, Ford, Mazda]
+[]
+[]            System.out.println(cars.get(0));                        // returns objs at passed index position
+[]
+[]            cars.set(0, "Opel");                                    // sets new obj to specified index position
+[]
+[]            cars.remove(0);                                         // removes obj at specified index position
+[]
+[]            cars.clear();                                           // empties ArrayList, >>> []
+[]
+[]            System.out.println(cars.size());                        // returns ArrayList size/length
+[]
+[]            for (int i = 0; i < cars.size(); i++) {                 // ordinary for-loop
+[]                System.out.println(cars.get(i));
+[]            }
+[]            for (String i : cars) {                                 // for-each loop
+[]                System.out.println(i);
+[]            }
+[]            cars.forEach( (n) -> {System.out.pritnln(n); } );       // forEach(Consumer<? super E> action)
+[]                                                                       performs tag_lambda expression task for every elem
+[]                                                                       of the Iterable.
+[]        }
+[]    }
+
+In order to ~!sort an ArrayList, we need the help of another class: java.util.Collections
+Sorts items based by comparing objects. Throws 'ClassCastException' for items of different
+classes. NOTE: for String objs, sorts numerical before alphabetical.
+
+[]    import java.util.ArrayList;
+[]    import java.util.Collections;        // Import the Collections class
+[]    public class Main {
+[]        public static void main(String[] args) {
+[]            ArrayList<String> cars = new ArrayList<String>();
+[]            cars.add("Volvo");
+[]            cars.add("BMW");
+[]            cars.add("Ford");
+[]            cars.add("Mazda");
+[]            Collections.sort(cars);      // Sort cars
+[]            System.out.println(cars);
+[]        }
+[]    }
+[]    >>> [BMW, Ford, Mazda, Volvo]
+
+
+
+
+================================================================================ ~!MULTI-DIMENSIONAL ARRAYLIST
+[]    ArrayList<ArrayList<String>> twodim = new ArrayList<ArrayList<String>>();
+[]    ArrayList<String> o1 = new ArrayList<String>();
+[]    twodim.add(o1);
+[]    o1.add("one");
+[]    System.out.println(twodim.get(0).get(0));
+[]    >>> one
+
+
+
+
+============================================================================================================================================ ~!LINKEDLIST
+A linked list is a linear data structure, in which the elements are not stored at contiguous memory locations (random).
+In simple words, a linked list consists of nodes where each node contains a data field and a reference(link/pointer) to
+the next node in the list. Structure wise:
+
+    [C01](link) --> [C02](link) --> [C03](link) --> [C04](link) --> Null
+    ^               ^^^^^^^^^^^
+    Node Head       Node
+
+
+--- ArrayList vs. LinkedList ---
+The LinkedList class is a collection which can contain many objects of the same type, just like the ArrayList. The
+LinkedList class has all of the same methods as the ArrayList class because they both implement the List interface.
+This means that you can add items, change items, remove items and clear the list in the same way.
+However, while the ArrayList class and the LinkedList class can be used in the same way, they are built very differently.
+
+How the ArrayList works:  [ Data stored together at same memory location, otherwise in continuous memory locations. ]
+                          The ArrayList class has a regular array inside it. When an element is added, it is placed into
+                          the array. If the array is not big enough, a new, larger array is created to replace the old one
+                          and the old one is removed.
+
+How the LinkedList works: [ Data distributed to random memory locations, but contains links/address to the next Data. ]
+                          The LinkedList stores its items in "containers." The list has a link to the first container and
+                          each container has a link to the next container in the list. To add an element to the list, the
+                          element is placed into a new container and that container is linked to one of the other containers
+                          in the list.
+
+NOTE: When To Use: Use an ArrayList for storing and accessing data, and LinkedList to manipulate data.
+
+
+For many cases, the ArrayList is more efficient as it is common to need access to random items in the list, but the LinkedList
+provides several methods to do certain operations more efficiently like : addFirst(), addLast(), removeFirst(), removeLast(),
+getFirst(), getLast(), ... etc. Methods of Java LinkedList are very similar (mostly same) to ArrayList. See all methods at:
+https://docs.oracle.com/javase/7/docs/api/java/util/LinkedList.html#removeFirstOccurrence(java.lang.Object)
+
+[]    import java.util.LinkedList;
+[]    public class Main {
+[]        public static void main(String[] args) {
+[]            LinkedList<String> cars = new LinkedList<String>();
+[]            cars.add("Volvo");
+[]            cars.add("BMW");
+[]            cars.add("Ford");
+[]            cars.add("Mazda");
+[]            System.out.println(cars);
+[]        }
+[]    }
+
+
+
+
+============================================================================================================================================ ~!HASHMAP
+// ~!dictionary
+Hash-Collection: HashTable, HashMap, HashSet
+
+ref: https://docs.oracle.com/javase/8/docs/api/java/util/HashMap.html
+
+HashMap implements the 'Map' interface. The HashMap class is roughly equivalent to Hashtable,
+except that it is unsynchronized and permits nulls.)It stores items in "key/value" pairs
+(like Python dictionaries) It can store different types: String keys and Integer values, .. etc.
+
+NOTE: There's no guarantee that the order of 'key-value' pairs will remain constant over time.
+NOTE: HashMap elements are filtered through a 'Hashing Algorithm / Hash Table / hashCode()', which
+      provides them with a special key (index) for each element. Thus, DUPLICATES are NOT ALLOWED.
+      Null element can be used as 'key-value' pairs.
+NOTE: To successfully store and retrieve objects from a Hash-Collection, the objects used as keys must
+      implement the hashCode() method and the equals() method from Java.lang.object:
+      https://www.geeksforgeeks.org/override-equalsobject-hashcode-method/
+
+[]    import java.util.HashMap;
+[]    public class Main {
+[]        public static void main(String[] args) {
+[]            HashMap<String, String> capitalCities = new HashMap<String, String>();    // <KeyType, ValueType>
+[]
+[]            capitalCities.put("England", "London");
+[]            capitalCities.put("Germany", "Berlin");
+[]            capitalCities.put("Norway", "Oslo");
+[]            capitalCities.put("USA", "Washington DC");
+[]
+[]            capitalcities.putIfAbsent(K key, V value);               // puts Value if Key is not mapped to Value or Null
+[]
+[]            System.out.println(capitalCities);                       // >>> {USA=Washington DC, Norway=Oslo, England=London, Germany=Berlin}
+[]
+[]            capitalCities.get("England");
+[]            capitalcities.getOrDefault(Object key, V defaultValue);  // gets key's value, else returns defaultValue if there's
+[]                                                                        no mapping for this key
+[]
+[]            capitalCities.remove("England");
+[]            capitalcities.remove(Object key, Object value);          // removes 'key-value' pair only if Key is mapped to Value
+[]
+[]            capitalcities.replace(K key, V newValue);                // replaces key's value with newValue
+[]            capitalcities.replace(K key, V oldValue, V newValue);    // replaces key's value with newVale only if key is mapped
+[]                                                                        to oldValue
+[]
+[]            capitalCities.clear();                                   // clears all 'key-value' pairs
+[]            capitalCities.size();
+[]
+[]            // Print keys and values
+[]            for (String i : capitalCities.keySet()) {                // .keySet() returns a 'Set()' view of all keys
+[]                System.out.println("key: " + i + " value: " + capitalCities.get(i));
+[]            }
+[]
+[]            // Print values
+[]            for (String i : capitalCities.values()) {                // .values() returns a 'Collection' view of all values
+[]                System.out.println(i);
+[]            }
+[]        }
+[]    }
+
+
+
+
+============================================================================================================================================ ~!HASHTABLE
+Hash-Collection: HashTable, HashMap, HashSet
+
+ref: https://docs.oracle.com/javase/8/docs/api/java/util/Hashtable.html
+
+The Hashtable class implements a hash table, which maps keys to values. Any non-null object can be
+used as a key or as a value. NOTE: To successfully store and retrieve objects from a Hash-Collection, the
+objects used as keys must implement the hashCode() method and the equals() method from Java.lang.object:
+https://www.geeksforgeeks.org/override-equalsobject-hashcode-method/
+
+It is similar to HashMap, but is synchronized. Hashtable stores key/value pair in hash table. In Hashtable
+we specify an object that is used as a key, and the value we want to associate to that key. The key is then
+hashed, and the resulting hash code is used as the index at which the value is stored within the table.
+
+
+
+
+============================================================================================================================================ ~!HASHSET
+Hash-Collection: HashTable, HashMap, HashSet
+
+ref: https://docs.oracle.com/javase/8/docs/api/java/util/HashMap.html
+
+HashSet implements the 'Set' interface, backed by a hash table (actually a HashMap instance)
+It is a collection of items where every item is unique (with its own Hash-Key)
+
+NOTE: There's no guarantee that the order of elements will remain constant over time.
+NOTE: HashSet elements are filtered through a 'Hashing Algorithm / Hash Table / hashCode()', which
+      provides them with a special Hash-Key (hidden within the data structure) for each element.
+      Thus, DUPLICATES are NOT ALLOWED. Null element can be used. You can access the elements
+      with loops.
+NOTE: To successfully store and retrieve objects from a Hash-Collection, the objects used as keys must
+      implement the hashCode() method and the equals() method from Java.lang.object:
+      https://www.geeksforgeeks.org/override-equalsobject-hashcode-method/
+      import java.util.HashSet;
+
+[]    public class Main {
+[]        public static void main(String[] args) {
+[]            HashSet<String> cars = new HashSet<String>();
+[]            cars.add("Volvo");
+[]            cars.add("BMW");
+[]            cars.add("Ford");
+[]            cars.add("BMW");           // Duplicates ignored
+[]            cars.add("Mazda");
+[]            System.out.println(cars);  // >>> [Volvo, Mazda, Ford, BMW]
+[]
+[]            cars.contains("Mazda");    // >>> true
+[]
+[]            cars.isEmpty()             // returns boolean, checks if HashSet is empty
+[]
+[]            cars.remove("Volvo");
+[]
+[]            cars.iterator();           // returns an 'Iterator' obj from HashSet
+[]
+[]            cars.clear();
+[]
+[]            cars.size();
+[]
+[]            for (String i : cars) {
+[]                System.out.println(i);
+[]            }
+[]        }
+[]    }
+
+
+
+
+============================================================================================================================================ ~!METHODS / FUNCTIONS
+// ~!functions
+
+[]    public class Main{
+[]        static int myMethod(String fname, int num, boolean married){
+[]                             ^             ^        ^ Multiple parameters
+[]            // code block
+[]            return x; (type int)
+[]        }
+[]    }
+
+static - means that the method belongs to the Main class, not an object of the Main class.
+
+
+// ~!methodoverloading
+Method Overloading
+With method overloading, multiple methods can have the SAME NAME with DIFFERENT PARAMETERS.
+Which method is called is determined by the type of arguments passed.
+
+[]    static int plusMethodInt(int x, int y) {
+[]      return x + y;
+[]    }
+[]
+[]    static double plusMethodDouble(double x, double y) {
+[]      return x + y;
+[]    }
+[]
+[]    public static void main(String[] args) {
+[]      int myNum1 = plusMethodInt(8, 5);
+[]      double myNum2 = plusMethodDouble(4.3, 6.26);
+[]      System.out.println("int: " + myNum1);
+[]      System.out.println("double: " + myNum2);
+[]    }
+
+
+// ~!scope
+Method Scope
+Variables declared directly inside a method are available anywhere ONLY in the method following the
+line of code in which they were declared:
+
+[]    public class Main {
+[]      public static void main(String[] args) {
+[]
+[]            // Code here CANNOT use x
+[]
+[]        int x = 100;
+[]
+[]            // Code here can use x
+[]        System.out.println(x);
+[]      }
+[]    }
+
+Block Scope
+A block of code refers to all of the code between curly braces {...}. Variables declared inside blocks of
+code are only accessible by the code between the curly braces, which follows the line in which the variable
+was declared. A block of code may exist on its own or it can belong to an if, while or for statement. In the
+case of for statements, variables declared in the statement itself are also available inside the block's scope.
+
+[]    public class Main {
+[]      public static void main(String[] args) {
+[]              // Code here CANNOT use x
+[]
+[]        {     // This is a block
+[]              // Code here CANNOT use x
+[]          int x = 100;
+[]              // Code here CAN use x
+[]          System.out.println(x);
+[]        }     // The block ends here
+[]
+[]              // Code here CANNOT use x
+[]      }
+[]    }
+
+
+
+// ~!Recursion
+Adding two numbers together is easy to do, but adding a range of numbers is more complicated. In the following
+example, recursion is used to add a range of numbers together by breaking it down into the simple task of adding
+two numbers.
+
+Example Explained
+When the sum() function is called, it adds parameter k to the sum of all numbers smaller than k and returns the
+result. When k becomes 0, the function just returns 0. When running, the program follows these steps:
+
+[]    public class Main {                               Returned  Equation
+[]      public static void main(String[] args) {            9     10 + sum(9)
+[]        int result = sum(10);                             8     10 + ( 9 + sum(8) )
+[]        System.out.println(result);                       7     10 + ( 9 + ( 8 + sum(7) ) )
+[]      }                                                  ...    ...
+[]      public static int sum(int k) {                      0     10 + 9 + 8 + 7 + 6 + 5 + 4 + 3 + 2 + 1 + sum(0)
+[]        if (k > 0) {                                      0     10 + 9 + 8 + 7 + 6 + 5 + 4 + 3 + 2 + 1 + 0
+[]          return k + sum(k - 1);                      *If you return the function itself, then you call it again.
+[]        } else {                                      Halting Condition: k = 0
+[]          return 0;
+[]        }
+[]      }
+[]    }
+
+Halting Condition
+Just as loops can run into the problem of infinite looping, recursive functions can run into the problem of
+infinite recursion. Infinite recursion is when the function never stops calling itself. Every recursive function
+should have a halting condition, which is the condition where the function stops calling itself. In the previous
+example, the halting condition is when the parameter k becomes 0.
+
+
+
+============================================================================================================================================ ~!TRY / CATCH / FINALLY
+// ~!try ~!catch() ~!finally ~!errors
+
+Exceptions list and details: https://docs.oracle.com/javase/7/docs/api/java/lang/Exception.html
+
+try{
+    // some code
+} catch (Exception1 e){
+    // some code
+} catch (Exception2 e){
+    // some code
+} finally{
+    // executed regardless of result
+}
+
+NOTE: for general purposes, use 'catch (Exception e)'
+
+
+NOTE: Java will throw different Exceptions for different errors. You can catch all Exceptions generally
+using 'catch(Exception e)' or catch different Exceptions seperately or togther as below:
+
+[]    try {
+[]        ...
+[]    } catch (IllegalArgumentException e) {
+[]        someCode();
+[]    } catch (SecurityException e) {
+[]        someCode();
+[]    } catch (IllegalAccessException e) {
+[]        someCode();
+[]    } catch (NoSuchFieldException e) {
+[]        someCode();
+[]    }
+
+[]    try {
+[]      ...
+[]    } catch (IllegalArgumentException | SecurityException | IllegalAccessException |
+[]                NoSuchFieldException e) {
+[]      someCode();
+[]    }
+
+
+NOTE: The ~!throw statement allows you to create a custom error. The throw statement is used together with an exception type.
+There are many exception types available in Java: ArithmeticException, FileNotFoundException, ArrayIndexOutOfBoundsException,
+SecurityException, ..etc.
+
+[]    public class Main {
+[]        static void checkAge(int age) {
+[]            if (age < 18) {
+[]                throw new ArithmeticException("Access denied - You must be at least 18 years old.");   // ERROR_TYPE & Optional Message
+[]            } else {
+[]                System.out.println("Access granted - You are old enough!");
+[]            }
+[]        }
+[]        public static void main(String[] args) {
+[]            checkAge(15);
+[]        }
+[]    }
+[]    >>> Exception in thread "main" java.lang.ArithmeticException: Access denied - You must be at least 18 years old.
+[]            at Main.checkAge(Main.java:4)
+[]            at Main.main(Main.java:10)
+
+The e.printStackTrace() method in Java is a tool used to handle exceptions and errors. It is a method of Java’s throwable class
+which prints the throwable along with other details like the line number and class name where the exception occurred.
+It is very much equivalent to 'System.out.println(e)', but provides much more details about the error.
+
+[]    class Program {
+[]        public static void foo() {
+[]            try {
+[]                int num1 = 5/0;
+[]            }
+[]            catch (Exception e) {
+[]                System.out.println(e);        <--
+[]            }
+[]        }
+[]        public static void main( String args[] ) {
+[]            foo();
+[]        }
+[]    }
+[]    >>> java.lang.ArithmeticException: / by zero
+
+[]    class Program {
+[]        public static void foo() {
+[]            try {
+[]                int num1 = 5/0;
+[]            }
+[]            catch (Throwable e) {
+[]                e.printStackTrace();
+[]            }
+[]        }
+[]        public static void main( String args[] ) {
+[]            foo();
+[]        }
+[]    }
+[]    >>> java.lang.ArithmeticException: / by zero
+[]    >>>         at Program.foo(main.java:4)
+[]    >>>         at Program.main(main.java:12)
+
+
+
+============================================================================================================================================ ~!PACKAGES / API
+// ~!import ~!api
+
+Directory: random C://...
+             |--- Package Name           OR     |--- Package Name           *You can have 0 or infinite sub-packages.
+               |--- Sub-Package Name              |--- ClassFile.java
+                 |--- ClassFile.java
+
+To Create Package:
+[]  package packagename.subpackage;
+[]  public class John {
+[]      //class code;
+[]  }
+
+To Import Package:
+[]  import package.subpackage.ClassName;   // Import a single class
+[]  import package.subpackage.*;           // Import the whole package
+
+
+For example in 'random_file.java':
+[]  import School.5A1.John
+Package directory: C:/...../School/5A1/John.java
+
+The Thing about Java Packages:
+    - In the first line of John.java, you must write 'package School.5A1;'. Java uses a 'directory' system for packages.
+    - The WHOLE 'School' folder must be located at the same directory as the 'random_file.java' that is going to import it.
+    - You must compile all the used classes/.java via the terminal: 'javac file.java', one-by-one? (use 'cd' & 'cd -')
+    * IMPORTANT: the package folder is encouraged to contain the 'John.java' source code. (John.class is created after compiling.)
+
+Option: The 'John.java' and other source codes of the package can also be in the same directory as the 'random_file.java' that
+        imports it. However, you must compile them via the terminal: 'javac -d . John.java'. It will then create a 'virtual'
+        folder of the package (compiled, containing .class files) that is ready to be used.
+
+* A few classes/classname.java in the same directory can work together without importing, provided they're not packages.
+  See OOP: tag_classes
+
+Built-in Java Packages: https://docs.oracle.com/en/java/javase/13/docs/api/allpackages-index.html
+
+
+=== STATIC IMPORT === // ~!staticimport
+Static import means that the fields and methods in a class can be used in the code without specifying their class if they
+are defined as public static.
+
+[]    import static java.lang.Math.sqrt;        <-- static import
+[]    public class Demo {
+[]        public static void main(String[] arg) {
+[]            double num = 36.0;
+[]            System.out.println("The square root of the above number is: " + sqrt(num));   <-- method call without class
+[]        }
+[]    }
+
+
+
+============================================================================================================================================ ~!RANDOM
+actually pseudo-random tho
+
+import java.util.Random;
+public class Main{
+    public static void main(String [] args){
+        Random r = new Random();
+
+        int i =    r.nextInt(int n)        Returns random int >= 0 and < n
+        int i =    r.nextInt()             Returns random int (full range)
+        long l = r.nextLong()           Returns random long (full range)
+        float f = r.nextFloat()         Returns random float >= 0.0 and < 1.0
+        double d = r.nextDouble()       Returns random double >=0.0 and < 1.0
+        boolean b = r.nextBoolean()     Returns random double (true or false)
+        double d = r.nextGaussian()     Returns random number with mean 0.0 and standard deviation 1.0
+    }
+}
+
+int i = r.nextInt(1001);      0-1000
+int i = r.nextLine(71) + 30;  30-100
+
+// to get a double between -1 and 1
+double i = r.nextDouble()*2 - 1; // rng.nextDouble() is between 0 and 1
+
+
+
+============================================================================================================================================ ~!DATETIME
+// ~!date ~!time
+
+[]    import:
+[]    java.time.LocalDate;             Represents a date (year, month, day (yyyy-MM-dd))
+[]    java.time.LocalTime;             Represents a time (hour, minute, second and nanoseconds (HH-mm-ss-ns))
+[]    java.time.LocalDateTime;             Represents both a date and a time (yyyy-MM-dd-HH-mm-ss-ns)
+[]    java.time.format.DateTimeFormatter;     Formatter for displaying and parsing date-time objects
+[]                                         //lol just import java.time.*;
+[]
+[]    public class Main {
+[]        public static void main(String[] args) {
+[]            LocalDate DateObj = LocalDate.now();      // Create a date object
+[]            System.out.println(DateObj);              >>> 2021-10-28
+[]
+[]            LocalTime TimeObj = LocalTime.now();      //  HH-mm-ss-ns
+[]            System.out.println(TimeObj);              >>> 18:30:20.854410
+[]
+[]            LocalDateTime DateTimeObj = LocalDateTime.now();    //  yyyy-MM-dd HH-mm-ss-ns ('T' is just to seperate date from time)
+[]            System.out.println(DateTimeObj);                    >>> 2021-10-06T18:30:20.854878
+[]
+[]
+[]            System.out.println("Before formatting: " + DateTimeObj);                                >>> Before Formatting: 2021-10-06T18:30:20.854878
+[]            DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");     //create format obj
+[]            //
+[]            String formattedDate = DateTimeObj.format(myFormatObj);                                 //format DateTimeObj according to format obj
+[]            System.out.println("After formatting: " + formattedDate);                               >>> After Formatting: 06-10-2021 18:30:20
+[]        }
+[]    }
+
+ofPattern() method accepts all sorts of values, if you want to display the date and time in a different format.
+More at: https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/time/format/DateTimeFormatter.html
+
+    Value             Example
+    yyyy-MM-dd         "1988-09-29"
+    dd/MM/yyyy         "29/09/1988"
+    dd-MMM-yyyy         "29-Sep-1988"
+    E, MMM dd yyyy     "Thu, Sep 29 1988"
+
+getDayOfMonth()                 This method gets the day-of-month field.
+getDayOfWeek()                  This method gets the day-of-week field, which is an enum DayOfWeek.
+getDayOfYear()                  This method gets the day-of-year field.
+getEra()                        This method gets the era applicable at this date.
+getLong(TemporalField field)    This method gets the value of the specified field from this date as a long.
+getMonth()                      This method gets the month-of-year field using the Month enum. (returns obj Month)
+getMonthValue()                 This method gets the month-of-year field from 1 to 12.
+getYear()                       This method gets the year field.
+
+NOTE: see also java.util.Date;
+      https://www.geeksforgeeks.org/date-class-java-examples/
+
+
+
+
+============================================================================================================================================ ~!REGEX / ~!ESCAPE CHAR
+NOTE: Majority of symbols & match characters are similar to Python REGEX.
+      Matcher characters in Java like '\d' are used like this '\\d'
+      Full at https://docs.oracle.com/javase/8/docs/api/java/util/regex/Pattern.html (Downloaded)
+
+How To: Pattern obj is used to store info about the search pattern,
+        which is then used with the Matcher obj to perform search &
+        other operations.
+A typical invocation sequence:
+    []    Pattern p = Pattern.compile("REpattern");
+    []    Matcher m = p.matcher("StringToMatch/Search");
+    []    boolean b = m.matches();
+is equivalent to
+    []    boolean b = Pattern.matches("REpattern", "StrinToMatch/Search");
+
+
+--- ~!PATTERN --- https://docs.oracle.com/javase/8/docs/api/java/util/regex/Pattern.html (Downloaded)
+Some common functions, full above ^
+
+Modifier and Type    Method and Description
+=================   =======================================================================
+static Pattern        .compile(String regex)
+                          Compiles the given regular expression into a pattern.
+
+static Pattern        .compile(String regex, int flags)
+                          Compiles the given regular expression into a pattern
+                          with the given flags. For Multiple flags:
+                          Pattern.compile("(\\d)(\\d+)", Pattern.LITERAL | Pattern.COMMENTS)
+Matcher                .matcher(String s)                                   ^
+                          Returns a Matcher Object.
+
+static boolean        .matches(String regex, String s)
+                          Compiles the given regular expression and attempts to
+                          match the given input against it.
+String[]            .split(CharSequence input, OPTIONAL int limit)
+                          Splits the given input sequence around matches of
+                          this pattern. Returns list of 'Non-Matchers'.
+                          'OPTIONAL int limit' is the max length (elem num) of the
+                          returned list, thus it ONLY permits a MAX split count of
+                          (limit-1).
+Stream<String>        .splitAsStream(CharSequence input)
+                          Creates a stream from the given input sequence around
+                          matches of this pattern. Returns Stream of 'Non-Matchers'.
+String                .pattern()
+                          Returns the regular expression from which this pattern
+                          was compiled.
+String                .toString()
+                          Returns the string representation of this pattern.
+int                    .flags()
+                          Returns this pattern's match flags in their respective
+                          int values.
+static String        .quote(String s)
+                          Returns a literal pattern String for the specified
+                          String.
+
+
+=== FLAGS =================================================================================
+Pattern.CANON_EQ                    Enables canonical equivalence.
+Pattern.CASE_INSENSITIVE            Enables case-insensitive matching.
+Pattern.COMMENTS                    Permits whitespace and comments in pattern.
+Pattern.DOTALL                      Enables dotall mode.
+Pattern.MULTILINE                   Enables multiline mode.
+Pattern.UNICODE_CASE                Enables Unicode-aware case folding.
+Pattern.UNIX_LINES                  Enables Unix lines mode.
+Pattern.UNICODE_CHARACTER_CLASS     Enables the Unicode version of Predefined character
+                                      classes and POSIX character classes.
+Pattern.LITERAL                     Enables literal parsing of the pattern. Metacharacters
+                                      or escape sequences in the input sequence will be
+                                      given no special meaning. "\\d" matches String "\\d"
+
+
+
+--- ~!MATCHER --- https://docs.oracle.com/javase/9/docs/api/java/util/regex/Matcher.html (Downloaded)
+Some common functions, full above ^
+
+Modifier and Type    Method and Description
+=================   =======================================================================
+boolean                .find​()
+                          Attempts to find the next subsequence of the input sequence
+                          that matches the pattern. Matcher obj moves to next match.
+                          (append position moved: One-Time Iterator sort-of)
+boolean                .find​(int start)
+                          Resets this matcher and then attempts to find the next subsequence
+                          of the input sequence that matches the pattern, starting at the
+                          specified index. (append position moved: One-Time Iterator sort-of)
+String                .group​()
+                          Returns the input subsequence matched by the previous match.
+String                .group​(int group)
+                          Returns the input subsequence captured by the given group during
+                          the previous match operation.
+boolean                .matches​()
+                          Attempts to match the entire region against the pattern.
+Pattern                .pattern​()
+                          Returns the pattern that is interpreted by this matcher.
+Matcher                .reset​(OPTIONAL StringToSearch)
+                          Resets this matcher (including append position) / with a new
+                          input sequence.
+String                .replaceAll​(String replacement)
+                          Replaces every subsequence of the input sequence that matches
+                          the pattern with the given replacement string.
+
+
+=== ~!GROUPS AND CAPTURING ================================================================
+Group number: Capturing groups (Python Sub-Groups) are numbered by counting their opening
+              parentheses from left to right. In the expression ((A)(B(C))), for example,
+              there are four such groups:
+
+1        ((A)(B(C)))
+2        (A)
+3        (B(C))
+4        (C)
+*'0' always stands for the entire expression.
+
+Capturing groups are so named because, during a match, each subsequence of the input sequence
+that matches such a group is saved. The captured subsequence may be used later in the expression,
+via a back reference, and may also be retrieved from the matcher once the match operation is complete.
+NOTE: Accessed using Matcher.group(int group); ^
+
+
+[]    import java.util.regex.Matcher;
+[]    import java.util.regex.Pattern;
+[]    public class random{
+[]        public static void main(String [] args){
+[]            Pattern pattern = Pattern.compile("(\\d)(\\d+)", Pattern.COMMENTS | Pattern.DOTALL);
+[]            Matcher matcher = pattern.matcher("Hey 123patty hows 456 it going lil pa789tty?");
+[]
+[]            System.out.println(matcher.find());       // true if found match, Matcher obj moves to next match
+[]            System.out.println(matcher.matches());    // true if whole input matches Pattern
+[]            System.out.println(Pattern.matches("patt",  "Hey patty hows it going lil patty?"));
+[]
+[]            System.out.println(pattern.flags());      // returns int val of flags specified
+[]            System.out.println(pattern.pattern());    //returns String value of pattern specified
+[]            System.out.println(pattern.toString());   // returns String representation of pattern
+[]
+[]            System.out.println(Pattern.quote("/,.#$|"));  //returns String (literal) for input STRING
+[]
+[]            String [] lis = pattern.split("Hey 123patty hows 456 it going lil pa789tty?", 4);
+[]            for (String i : lis){                     // Max lis length: 4, Max num of splits: 4-1=3
+[]                System.out.println("lis - "+i);
+[]            }
+[]            // >>> lis - Hey
+[]            //     lis - patty hows
+[]            //     lis -  it going lil pa
+[]            //     lis - tty?
+[]
+[]            while(matcher.find()){                              // while true (there's another match)
+[]                System.out.println("mat - "+matcher.group(1));  // group 1 of capture group (subgroup)
+[]            }
+[]            // >>> mat - 1
+[]            //     mat - 4
+[]            //     mat - 7
+[]        }
+[]    }
+
+
+
+
+============================================================================================================================================ ~!THREADS
+public class Thread
+extends Object
+implements Runnable
+ref: https://docs.oracle.com/javase/7/docs/api/java/lang/Thread.html
+
+Threads allows a program to operate more efficiently by doing multiple things at the same time. Threads can be
+used to perform complicated tasks in the background without interrupting the main program.
+
+Every thread has a ~!priority. Threads with higher priority are executed in preference to threads with lower
+priority. (used by Thread scheduler to decide which thread should be allowed to execute.) When code running in
+some thread creates a new Thread object, the new thread has its priority initially set equal to the priority of
+the creating thread, and is a daemon thread if and only if the creating thread is a daemon.
+
+Below code is mostly done by Java developers.
+    []    public class Thread extends object, implements Runnable {
+    []        public static final int   MAX_PRIORITY = 10;
+    []        public static final int   MIN_PRIORITY = 1;
+    []        public static final int   NORM_PRIORITY = 5;
+    []
+    []        public void setPriority(int newPriority){       <-- Set method definition
+    []            this.PRIORITY = newPriority;
+    []        }
+    []    }
+
+Each thread may or may not also be marked as a ~!daemon. A daemon thread is a thread that does not prevent (allows)
+the JVM from exiting when the program finishes but the thread is still running. An example for a daemon thread is
+the garbage collection. You can use the setDaemon(boolean) method to change the Thread daemon properties before the
+thread starts.
+
+When a Java Virtual Machine starts up, there is usually a single non-daemon thread (which typically calls the method
+named 'main' of some designated class). The Java Virtual Machine continues to execute threads until either of the
+following occurs:
+
+    - The exit method of class Runtime has been called and the security manager has permitted the exit operation to
+      take place.
+    - All threads that are not daemon threads have died, either by returning from the call to the run method or by
+      throwing an exception that propagates beyond the run method.
+
+NOTE: To create a Thread object, do as below:
+  1. 'Class extends Thread' or 'Class implements Runnable'. (Second option allows you to extend other classes)
+  2. @Override Thread/Runnable's 'public void run()' method, which is in turn called by Thread.start().
+     (Insert code to be run in the background here)
+
+
+=== Extends Thread class ===
+[]    public class Main extends Thread {            <-- Main already has properties of Thread (Inherited)
+[]        public static void main(String[] args) {        that's why just directly use Main class obj.start();
+[]            Main thread = new Main();                <-- Create threat obj
+[]            thread.start();                          <-- calls run()
+[]            System.out.println("This code is outside of the thread");
+[]        }
+[]    @Override
+[]    public void run() {
+[]        System.out.println("Insert code to be run in the background here");
+[]        }
+[]    }
+[]    >>> Insert code to be run in the background here
+[]    >>> This code is outside of the thread
+
+
+=== Implements Runnable interface ===
+[]    public class Main implements Runnable {                    <-- Optional 'extends OtherClass'
+[]        public static void main(String[] args) {
+[]            Main obj = new Main();                             <-- Create class (Runnable) obj
+[]            Thread thread = new Thread(obj, "OptThreadName");    <-- Pass in 'Runnable' obj to create Thread obj ()
+[]            thread.start();                                    <-- calls run()
+[]            System.out.println("This code is outside of the thread");
+[]        }
+[]        @Override
+[]        public void run() {
+[]            System.out.println("Insert code to be run in the background here");
+[]        }
+[]    }
+[]    >>> Insert code to be run in the background here
+[]    >>> This code is outside of the thread
+
+
+--- ~!Concurrency Problems ---
+Because threads run at the same time as other parts of the program, there is no way to know in which order the code will
+run. When the threads and main program are reading and writing the same variables, the values are unpredictable. The
+problems that result from this are called concurrency problems.
+
+To avoid concurrency problems, it is best to share as few attributes between threads as possible. If attributes need to
+be shared, one possible solution is to use the isAlive() method of the thread to check whether the thread has finished
+running before using any attributes that the thread can change.
+
+[]    public class Main extends Thread {
+[]        public static int amount = 0;
+[]
+[]        public static void main(String[] args) {
+[]            Main thread = new Main();
+[]            thread.start();
+[]
+[]            while(thread.isAlive()) {              <-- wait for thread process to end
+[]                System.out.println("Waiting...");
+[]            }
+[]            System.out.println("Thread: " + amount);
+[]
+[]            amount++;                              <-- code from main
+[]            System.out.println("Main: " + amount);
+[]        }
+[]        public void run() {
+[]            amount++;
+[]        }
+[]    }
+[]    >>> Waiting...
+[]    >>> Thread: 1
+[]    >>> Main: 2
+
+
+
+Some common functions, full above link ^
+Modifier and Type    Method and Description
+=================   =======================================================================
+static int          .activeCount()
+                          Returns an estimate of the number of active threads in the current thread's
+                          thread group and its subgroups.
+void                .start()
+                          Causes this thread to begin execution; the Java Virtual Machine calls the run()
+                          method of this thread.
+void                .run()
+                          If this thread was constructed using a separate Runnable run object (@Overrride),
+                          then that Runnable object's run method is called; otherwise, this method does nothing
+                          and returns.
+String              .toString()
+                          Returns a string representation of this thread, including the thread's name, priority,
+                          and thread group.
+long                .getId()
+                          Returns the identifier of this Thread.
+
+String              .getName()
+                          Returns this thread's name.
+
+void                .setName(String name)
+                          Changes the name of this thread to be equal to the argument name. Can also be done in
+                          constructor call: Thread(args, "OptThreadName")
+int                 .getPriority()
+                          Returns this thread's priority.
+
+void                .setPriority(int newPriority)
+                          Changes the priority of this thread.
+
+boolean             .isAlive()
+                          Tests if this thread is alive.
+
+boolean             .isDaemon()
+                          Tests if this thread is a daemon thread.
+
+void                .setDaemon(boolean on)
+                          Marks this thread as either a daemon thread or a user thread.
+
+void                .join()
+                          Waits for this thread to die.
+void                .join(long millis)
+                          Waits at most millis milliseconds for this thread to die.
+void                .join(long millis, int nanos)
+                          Waits at most millis milliseconds plus nanos nanoseconds for this thread to die.
+
+static void         .sleep(long millis)
+                          Causes the currently executing thread to sleep (temporarily cease execution) for the
+                          specified number of milliseconds, subject to the precision and accuracy of system timers
+                          and schedulers.
+static void         .sleep(long millis, int nanos)
+                          Causes the currently executing thread to sleep (temporarily cease execution) for the
+                          specified number of milliseconds plus the specified number of nanoseconds, subject to the
+                          precision and accuracy of system timers and schedulers.
+Thread Constructors:
+
+    Thread()
+    Thread(String name)
+    Thread(Runnable obj)
+    Thread(Runnable obj, String name)
+    Thread(ThreadGroup group, String name)
+    Thread(ThreadGroup group, Runnable obj)
+    Thread(ThreadGroup group, Runnable obj, String name)
+    Thread(ThreadGroup group, Runnable obj, String name, long stackSize)
+
+*Runnable obj is the obj that belongs to the class that implements the 'Runnable' interface. (i.e. Main obj = new Main(); )
+Allocates a new Thread object so that it has obj as its run object, has the specified name as its name, and belongs to
+the thread group referred to by group, and has the specified stack size.
+
+
+
+
+============================================================================================================================================ ~!LAMBDA EXPRESSIONS
+// ~!lambdaexpressions
+
+A lambda expression is a short block of code which takes in parameters and returns a value.
+Lambda expressions are similar to methods, but they do not need a name and they can be
+implemented right in the body of a method. Syntax:
+
+    1.    (DataType OneParameter) -> expression;
+    2.    (DataType parameter1, DataType parameter2) -> expression;
+
+Expressions are limited. They have to immediately return a value, and they cannot contain
+variables, assignments or statements such as 'if' or 'for'. In order to do more complex operations,
+a code block can be used with curly braces. If the lambda expression needs to return a value,
+then the code block should have a return statement.
+
+    3.    (DataType parameter1, DataType parameter2) -> { //code block ; }
+
+Some sample code;
+    []    import java.util.ArrayList;
+    []    public class Main {
+    []        public static void main(String[] args) {
+    []            ArrayList<Integer> numbers = new ArrayList<Integer>();
+    []            numbers.add(5);
+    []            numbers.add(9);
+    []            numbers.add(8);
+    []            numbers.add(1);
+    []            numbers.forEach( (n) -> { System.out.println(n); } );
+    []        }
+    []    }
+
+
+
+=== Using Lambda Expressions With Functional Interfaces ===
+-----------------------------------------------------------
+ref: https://www.geeksforgeeks.org/functional-interfaces-java/
+NOTE: lambda expression must return the same DataType as described by Interface Method.
+      Thus, most of the time the 'lambda expression - interface' method is called in
+      other methods.
+
+// ~!functionalinterface
+A functional interface is an interface that contains only one abstract method (body undefined)
+for the use of lambda expressions. They can have only one functionality to exhibit, which is to
+act as a DataType for containing lambda expressions. The 'java.util.function' package contains
+many built-in functional interfaces like 'Predicate', 'BinaryOperator', 'Function', 'Consumer'.
+
+@FunctionalInterface annotation is used to ensure that the functional interface can’t have more
+than one abstract method. In case more than one abstract methods are present, the compiler flags
+an ‘Unexpected @FunctionalInterface annotation’ message. However, it is not mandatory to use this
+annotation. Example:
+
+    []    @FunctionalInterface
+    []    interface StringFunction {
+    []        String run(String str);     <-- abstract method Syntax: <return> name(..params..);
+    []    }
+
+From Java 8 onwards, lambda expressions can be used to represent / assigned as the object of a
+functional interface (Java 8 onwards). Example:
+
+    []    StringFunction exclaim = (String s) -> s + "!";
+    []    StringFunction ask = (String s) -> s + "?";
+                               ^^^^^^^^^^^^^^^^^^^^^
+Some sample code about how the whole system works:
+
+    []    @FunctionalInterface
+    []    interface StringFunction {        1. Functional Interface as DataType to contain lambda expressions
+    []        String run(String str);       2. abstract method that will run the lambda expression when called
+    []    }                                    How? The lambda expression acts as the body of the method.
+    []                                         The lambda expression is mapped onto the method based on its
+    []                                         args DataType & return value DataType.
+    []
+    []    public class Main {
+    []        public static void main(String[] args) {
+    []            StringFunction exclaim = (String s) -> s + "!";        3. Assigning lambda expression as object of Functional Interface
+    []            StringFunction ask = (String s) -> s + "?";
+    []            printFormatted("Hello", exclaim);                      6. Using the defined 'printFormatted()' method
+    []            printFormatted("Hello", ask);
+    []        }
+    []        public static void printFormatted(String str, StringFunction obj) {     4. Defining method that will take in String & Interface object as args
+    []            String result = obj.run(str);                                       5. 'obj.run()' method will call the lambda expression
+    []            System.out.println(result);
+    []        }
+    []    }
+
+
+============================================================================================================================================ ~!FILE HANDLING
+// ~!filehandle ~!openfile ~!filehandling ~!reader ~!io ~!i/o
+
+I/O Package: https://docs.oracle.com/javase/7/docs/api/java/io/package-summary.html
+Scanner:     https://docs.oracle.com/javase/7/docs/api/java/util/Scanner.html
+
+There are many available classes in the Java API that can be used to read and write files in
+Java: FileReader, BufferedReader, Files, Scanner, FileInputStream, FileWriter, BufferedWriter,
+FileOutputStream, etc. Which one to use depends on the Java version you're working with and
+whether you need to read bytes or characters, and the size of the file/lines etc.
+
+[]    NOTE: Quick Summary
+[]    File       : Create, Read, GetInfo, Delete
+[]    FileWriter : Write
+
+File types: .txt (ASCII Encoding)  .dat (Binary Encoded)
+Terminology: Input Stream (Data flows into program)
+             Output Stream (Data flows out of program)
+
+The File class from the java.io package, allows us to work with files. To use the File class,
+create an object of the class, and specify the filename or directory name:
+
+[]    import java.io.File;                   // Import the File class
+[]    import java.io.FileWriter;             // Import the FileWriter class
+[]    import java.io.FileNotFoundException;  // Import this class to handle errors
+[]    import java.io.IOException;            // Import the IOException class to handle errors
+[]    import java.util.Scanner;              // Import the Scanner class to read text files
+[]    ...
+[]    File myObj = new File("/path/filename.txt");   // Mac & Linux
+[]    File myObj = new File("C:\\Users\\MyName\\filename.txt");  // Windows with '\' escaped
+
+ALTERNATIVES
+[]    import java.util.Scanner;                // Scanner as reader
+[]    import java.io.BufferedReader;           // alternative reader
+[]    import java.io.FileReader;               // alternative reader
+[]    import java.io.PrintWriter;
+[]    import java.io.FileInputStream;
+[]    import java.io.FileOutputStream;
+[]    import java.io.FileNotFoundException;
+[]    import java.io.IOException;
+...
+
+
+'File'Method        Return   Description
+------------------------------------------------------------------------
+canRead()           Boolean  Tests whether the file is readable or not
+canWrite()          Boolean  Tests whether the file is writable or not
+createNewFile()     Boolean  Creates an empty file
+delete()            Boolean  Deletes a file
+exists()            Boolean  Tests whether the file exists
+getName()           String   Returns the name of the file
+getAbsolutePath()   String   Returns the absolute (full) pathname of the file ("./abstract_Path")
+length()            Long     Returns the size of the file in bytes
+list()              String[] Returns an array of the files in the directory
+mkdir()             Boolean  Creates a directory
+renameTo(File dest) Boolean  Renames file denoted by this abstract pathname
+lastModified()      Long     (00:00:00 GMT, January 1, 1970), or 0L if the file
+                             does not exist or if an I/O error occurs.
+
+
+'FileWriter'Method  Return   Description
+------------------------------------------------------------------------
+write(String str)   void     Writes str to file based on mode (append: true/false)
+close()             void     Closes FileWriter obj.
+FileWriter(File file)
+FileWriter(File file, boolean append)
+FileWriter(FileDescriptor fd)    //Constructs a FileWriter object associated with a file descriptor.
+FileWriter(String fileName)
+FileWriter(String fileName, boolean append) AppendTrue: append instead of re-write
+
+
+
+
+
+1.  === Create File ===
+    []    import java.io.File;                            // Import the File class
+    []    import java.io.IOException;
+    []    ...
+    []        try {
+    []          File myObj = new File("filename.txt");                     // create File obj
+    []          if (myObj.createNewFile()) {                               // creates file + return boolean
+    []            System.out.println("File created: " + myObj.getName());
+    []          } else {
+    []            System.out.println("File already exists.");
+    []          }
+    []        } catch (IOException e) {
+    []          System.out.println("An error occurred.");
+    []          e.printStackTrace();
+    []        }
+    []    >>> File created: filename.txt
+
+
+
+2.  === Write File === (FileWriter) (.txt)
+    []    import java.io.FileWriter;                      // Import the FileWriter class
+    []    import java.io.IOException;
+    []    ...
+    []        try {
+    []          FileWriter out = new FileWriter("filename.txt");                     // create FileWriter obj
+    []          out.write("Files in Java might be tricky, but it is fun enough!");   // write
+    []          out.close();                                                         // close
+    []          System.out.println("Successfully wrote to the file.");
+    []        } catch (IOException e) {
+    []          System.out.println("An error occurred.");
+    []          e.printStackTrace();
+    []        }
+    []    >>> Successfully wrote to the file.
+
+
+    === Write File === (PrintWriter) (.txt)
+    []    import java.io.PrintWriter;
+    []    import java.io.FileOutputStream;
+    []    import java.io.IOException;
+    []    ...
+    []        try{
+    []            PrintWriter out = new PrintWriter(new FileOutputStream("filename.txt"));         // overwrite
+    []            PrintWriter out = new PrintWriter(new FileOutputStream("filename.txt", true));   // append
+    []            ... out.print(), out.println(), out.printf() can be used to write data to file
+    []            out.close();
+    []        } catch (IOException e){
+    []            System.out.println("Problem with file output");
+    []        }
+
+
+    === Write File === (Binary File .dat)
+    []    import java.io.ObjectOutputStream;
+    []    import java.io.FileOutputStream;
+    []    import java.io.IOException;
+    []    ...
+    []        try{
+    []            ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("filename.dat"));
+    []            out.writeInt(6);
+    []            out.writeDouble(3.142);
+    []            out.writeChar('a');
+    []            out.writeBoolean(true);
+    []            out.writeUTF("String");
+    []            out.close();
+    []        } catch (IOException e){
+    []            System.out.println("Problem with file output");
+    []        }
+
+
+
+3.  === Read File === (Scanner & File) (.txt)
+    []    import java.io.File;                      // Import the File class
+    []    import java.io.FileNotFoundException;     // Import this class to handle errors
+    []    import java.util.Scanner;                 // Import the Scanner class to read text files
+    []    ...
+    []        try {
+    []          Scanner in = new Scanner(new File("filename.txt"));    // create Scanner obj (pass in File obj)
+    []          while (in.hasNextLine()) {                             // check for nextLine
+    []            String data = in.nextLine();                         // read
+    []            System.out.println(data);
+    []          }
+    []          in.close();                             // close
+    []        } catch (FileNotFoundException e) {
+    []          System.out.println("An error occurred.");
+    []          e.printStackTrace();
+    []        }
+    []    >>> Files in Java might be tricky, but it is fun enough!
+
+
+    === Read File === (Scanner & FileInputStream) (.txt)
+    []    import java.io.FileInputStream;
+    []    import java.io.FileNotFoundException;
+    []    import java.util.Scanner;
+    []    ...
+    []        try{
+    []            Scanner in = new Scanner(new FileInputStream("filename.txt"));
+    []            ... // same as above nextLine nextInt nextDouble ...
+    []            in.close();
+    []        } catch (FileNotFoundException e) {
+    []            System.out.println("File was not found");
+    []        }
+
+
+    === Read File === (BufferedReader & FileReader) (.txt)
+    []    import java.io.BufferedReader;
+    []    import java.io.FileReader;
+    []    import java.io.FileNotFoundException;
+    []    import java.io.IOException;
+    []    ...
+    []        try{
+    []            BufferedReader in = new BufferedReader(new FileReader("filename.txt"));
+    []            String data;
+    []            while((data=in.readLine()) != null){        // detect end of file
+    []                System.out.println(data);
+    []                //  String s = in.readLine();
+    []                //  String s = in.read();
+    []            }
+    []            in.close();
+    []        } catch (FileNotFoundException e){
+    []            System.out.println("File was not found");
+    []        } catch (IOException e){
+    []        System.out.println("Error reading from file");
+    []        }
+
+
+    === Read File === (Binary File .dat)
+    []    import java.io.IOException;
+    []    import java.io.FileNotFoundException;
+    []    import java.io.ObjectInputStream;
+    []    import java.io.FileInputStream;
+    []    ...
+    []        try{
+    []            ObjectInputStream in = new ObjectInputStream(new FileInputStream("filename.dat"));
+    []            try{
+    []                while(true){
+    []                    num = in.readInt();
+    []                    dou = in.readDouble();
+    []                    cha = in.readChar();
+    []                    boo = in.readBoolean();
+    []                    str = in.readUTF();
+    []                }
+    []            } catch(EOFException e) {}     // End Of File Exception
+    []            in.close();
+    []        } catch (FileNotFoundException e){
+    []            System.out.println("File was not found");
+    []        } catch (IOException e){
+    []            System.out.println("Problem with file input");
+    []        }
+
+
+
+4.  === Get File Info ===
+    []    import java.io.File;                            // Import the File class
+    []    public class GetFileInfo {
+    []      public static void main(String[] args) {
+    []        File myObj = new File("filename.txt");
+    []        if (myObj.exists()) {
+    []          myObj.renameTo("data.txt");
+    []          System.out.println("File name: " + myObj.getName());                 // get Name
+    []          System.out.println("Absolute path: " + myObj.getAbsolutePath());     // get AbsolutePath
+    []          System.out.println("Writeable: " + myObj.canWrite());                // check writability
+    []          System.out.println("Readable " + myObj.canRead());                   // check readability
+    []          System.out.println("File size in bytes " + myObj.length());          // check byte length
+    []        } else {
+    []          System.out.println("The file does not exist.");
+    []        }
+    []      }
+    []    }
+    []    >>> File name: filename.txt
+    []    >>> Absolute path: C:\Users\MyName\filename.txt
+    []    >>> Writeable: true
+    []    >>> File size in bytes: 0
+
+
+
+5.  === Delete File ===
+    []    import java.io.File;  // Import the File class
+    []    public class DeleteFileFolder {
+    []      public static void main(String[] args) {
+    []        File myObj = new File("filename.txt");
+    []        if (myObj.delete()) {
+    []          System.out.println("Deleted the file: " + myObj.getName());
+    []        } else {
+    []          System.out.println("Failed to delete the file.");
+    []        }
+    []      }
+    []    }
+    []    >>> Deleted the file: filename.txt
+
+
+
+6.  === Delete Folder ===
+    NOTE: Last elem in directory must be a folder, not file.
+    []    import java.io.File;
+    []    public class DeleteFolder {
+    []      public static void main(String[] args) {
+    []        File myObj = new File("C:\\Users\\MyName\\Test");
+    []        if (myObj.delete()) {
+    []          System.out.println("Deleted the folder: " + myObj.getName());
+    []        } else {
+    []          System.out.println("Failed to delete the folder.");
+    []        }
+    []      }
+    []    }
+    []    >>> Deleted the folder: Test
+
+
+
+
+
+
+
+
+
+=====================================================================================================================================================================
+// ~!startofOOP ===================================================================================================================================================== ~!OOP
+=====================================================================================================================================================================
+// OOP: Object Oriented Programming
+
+Alright, some important info first shall we?
+
+1.  In python, a .py file can have multiple classes. In java you can only have ONE 'PUBLIC' class in every .java file, and the
+    filename should match the 'public' class' name. A .java file is called a compilation unit. Each compilation unit may contain
+    any number of top-level classes and interfaces, provided that ONLY ONE of them is public. If there are no public top-level
+    types then the compilation unit can be named anything. However, if there is a public top-level class, then the file name must
+    be the same as the class name. Usually cases such as below occur:
+        - A public class with other non-public class (support classes to the public)
+        - Multiple non-public classes that work together.
+    * A few classes/classname.java in the same directory can work together without importing.
+
+
+// ~!this
+2.  In python you use 'self' to refer to the object's/class' instance. In java, you use 'this'. Same functionality, just that you
+    do not need to pass it into the method parammeters.
+    NOTE: 'this' can ONLY be used with NON-STATIC methods & attributes. STATIC things doesn't have objs.
+    []
+    []    public int method(params){    instead of     def method(self, params):
+    []        this.attribute = 0;                          self.attribute = 0
+    []    }
+    Another use of 'this' is that when you have multiple constructors (init) for a single class, you can use 'this(arg0, arg1, ...)' to
+    call another constructor of your choosing, provided you do so in the first line of your constructor, and pass in the arguments that
+    the 'wanted' constructor requires.
+    []
+    []    class Foo {
+    []        public Foo() {
+    []            this("String value. This init calls the below init");
+    []            //just like creating/init an obj in python: obj1 = Foo(params_of_init)
+    []        }
+    []
+    []        public Foo(String VAL1) {
+    []            // Do something with VAL1
+    []        }
+    []    }
+    One more use of 'this' is when accessing an outer instance from a nested non-static class:
+    []
+    []    public class Outer {
+    []        protected int a;
+    []
+    []        public class Inner {
+    []            protected int a;
+    []
+    []            public int foo(){
+    []                return Outer.this.a;    <--
+    []            }
+    []
+    []            public Outer getOuter(){    <--
+    []                return Outer.this;
+    []            }
+    []        }
+    []    }
+
+
+============================================================================================================================================ ~!WARMUP /OOP
+// OOP
+Some general warm-up code?
+
+[]    public class Main {
+[]        // attribute
+[]        final int x = 10;
+[]        int y;
+[]
+[]        // STATIC method, ref: tag_static
+[]        //           Also see: tag_methodoverloading
+[]        static void myStaticMethod() {
+[]            System.out.println("Static methods can be called without creating objects");
+[]        }
+[]
+[]        // NON-STATIC method
+[]        // NOTE: 'this' can ONLY be used with NON-STATIC methods & attributes. STATIC things doesn't have objs.
+[]        public void myPublicMethod() {
+[]            this.y = 20;
+[]            System.out.println("Public methods must be called by creating objects " + this.y);
+[]        }
+[]
+[]        //** MAIN.
+[]        public static void main(String[] args) {
+[]            Main myObj = new Main();
+[]            myObj.x = 25;                     // will generate an error: cannot assign a value to a final variable
+[]            System.out.println(myObj.x);
+[]
+[]            Main.myStaticMethod();            // Call the static method
+[]            myStaticMethod();                 // optional without class call
+[]                                              // myPublicMethod(); This would compile an error
+[]
+[]            Main myObj = new Main();          // Create an object of Main
+[]            myObj.myPublicMethod();           // Call the public method on the object
+[]        }
+[]    }
+[]
+[]    >>> ERROR: Cannot assign value to a final variable
+[]    >>> 10
+[]    >>> Static methods can be called without creating objects
+[]    >>> Static methods can be called without creating objects
+[]    >>> Public methods must be called by creating objects 20
+
+
+
+
+============================================================================================================================================ ~!CLASSES /OOP
+// OOP
+Two classes can work together just as in Python, but in java they have to be in separate files, provided
+that they are located at the same directory. (i.e. 'Main.java' 'Second.java')
+
+====== Main.java ======
+[]    public class Main {
+[]      public void fullThrottle() {
+[]        System.out.println("The car is going as fast as it can!");
+[]      }
+[]
+[]      public void speed(int maxSpeed) {
+[]        System.out.println("Max speed is: " + maxSpeed);
+[]      }
+[]    }
+
+====== Second.java ======
+[]    class Second {
+[]      public static void main(String[] args) {
+[]        Main myCar = new Main();     // Create a myCar object
+[]        myCar.fullThrottle();        // Call the fullThrottle() method
+[]        myCar.speed(200);            // Call the speed() method
+[]      }
+[]    }
+
+... javac Main.java
+... javac Second.java
+... java Second.java
+
+>>> The car is going as fast as it can!
+>>> Max speed is: 200
+
+See more at: tag_packages
+
+
+
+
+============================================================================================================================================ ~!CLASS METHODS
+
+In java, the class definition usually contains the '.equals()', '.toString()' & 'getClass()' method.
+
+'.equals()' returns true if both objects are equal.
+ref: https://docs.oracle.com/javase/7/docs/api/java/lang/Object.html#equals(java.lang.Object)
+
+=== equals() ===
+[]    public boolean equals(Person p){
+[]        if(name.equals(p.getName()))
+[]            return true;
+[]        else
+[]            return false;
+[]    }
+
+=== ~!getClass() ===
+[]    if (obj1.getClass() == obj2.getClass()){
+[]        System.out.println("Both the objects are of the same class.");
+[]    }
+[]    NOTE: only applicable for objects of the same class / inherited class, else throws error (hint: use try catch)
+
+=== ~!instanceof === Operator
+[]    if (obj1 instanceof ClassName){
+[]        System.out.println("The object is one of the type of any descendent class of ClassName.");
+[]    }
+[]    #By other words, obj1 belongs to a class that is a descendant class (child) of class ClassName.
+[]    NOTE: only applicable for objects of the same class / inherited class, else throws error (hint: use try catch)
+
+
+============================================================================================================================================ ~!CONSTRUCTORS /OOP
+// OOP ~!init() ~!__init__()
+
+Just like '__init__()' method in Python, a constructor in Java is a special method that is used to initialize objects. The
+constructor is called when an object of a class is created. It can be used to set initial values for object attributes.
+
+NOTE: The constructor name must match the class name, and it CANNOT have a return type (like void).
+All classes have constructors by default: if you do not create a class constructor yourself, Java creates one for you.
+However, then you are not able to set initial values for object attributes.
+
+NOTE: The constructor of a base class is always executed before the constructor of the class you are instantiating.
+
+NOTE: Initializer blocks run before constructors. See tag_blocks
+
+NOTE: The constructor of a base class is always executed 
+      before the constructor of the class you are instantiating.
+      (when using super().)
+
+
+[]    public class Main {
+[]        int modelYear;
+[]        String modelName;
+[]
+[]        public Main(int year, String name) {      <--Constructor __init__()
+[]            modelYear = year;
+[]            modelName = name;
+[]        }
+[]
+[]        public static void main(String[] args) {
+[]            Main myCar = new Main(1969, "Mustang");
+[]            System.out.println(myCar.modelYear + " " + myCar.modelName);
+[]        }
+[]    }
+[]    >>> 1969 Mustang
+
+
+=== COPY CONSTRUCTOR ===
+A copy constructor is a constructor with one parameter, which has the same type as the class. It creates an
+object that is separate & independent BUT is the exact copy of the argument object.
+
+[]    public person(person p){
+[]        if(p==null)
+[]            System.exit(0);
+[]
+[]        // pre-defined getter methods
+[]        name=p.getName();
+[]        age=p.getAge();
+[]    }
+
+The java built-in .clone() method is built based on this. ~!clone()
+
+[]    // built-in clone method definition most-likely looks like this
+[]    public ClassName clone() {
+[]       return new ClassName(this);  <-- copy constructor
+[]    }
+
+[]    // clone method application
+[]    public Sale doCopy(Sale a) {
+[]       Sale b;
+[]       b = a.clone();
+[]    }
+
+
+
+====== METHOD OVERLOADING ======
+As we've seen in method overloading, a class can have more than one constructor, provided that they take in
+different parameters. Which constructor is called depends on the arguments passed in during initialisation of
+the object.
+
+[]    public class trial2{
+[]        public int x;
+[]        public trial2(){
+[]            System.out.println("init 1 called");
+[]        }
+[]        public trial2(int x){
+[]            this.x=x;
+[]            System.out.println("init 2 called");
+[]        }
+[]        public static void main(String [] args){
+[]            trial2 obj1 = new trial2();            <-- calls init 1
+[]            trial2 obj2 = new trial2(5);           <-- calls init 2
+[]        }
+[]    }
+
+
+====== METHOD ~!@OVERRIDING ======
+ref: https://docs.oracle.com/javase/tutorial/java/IandI/override.html
+It lets the compiler double-check for you when you say (by annotating) that a specified method is supposed to
+~!override a superclass method (or implement an interface method in Java 6 or later). If the method does not, in
+fact, override a superclass method (or implement an interface method), the compiler will flag this as an error.
+This often indicates that you have a typo in the method name or made a mistake in the method signature.
+Need it? Absolutely not, but its such a cheap way to :
+    - convey explicitly to human reader that this is an overriding method.
+    - catch a bug at compile time that could take at least a few brain cycles to catch at run-time.
+
+NOTE: The access specifier for an overriding method can allow more, but not less, access than the overridden method.
+      For example, a protected instance method in the superclass can be made public, but not private, in the subclass.
+
+NOTE: As a general rule, an override method cannot change the return type of the method definition. However, if the returned
+      type is of a class type, the returned type can be changed to the DESCENDANT (CHILD) class type.
+        []
+        []    public class Parent{
+        []        public static Parent getObj(){
+        []            ...
+        []            return parentObj;
+        []        }
+        []    }
+        []    public class Child extends Parent{
+        []        @Override
+        []        public static Child getObj(){
+        []            ...
+        []            return childObj;
+        []        }
+        []    }
+
+
+NOTE: You can not @Override static methods in Java, however you can declare a method with the same signature in
+      a subclass. It won't be overridden in the exact sense, instead, that is called method hiding.
+
+The following table summarizes what happens when you define a method with the same signature as a method in a superclass.
+
+                              Superclass Instance Method       Superclass Static Method
+                         |--------------------------------|--------------------------------|
+Subclass Instance Method | @Overrides                     | Generates a compile-time error |
+Subclass Static Method   | Generates a compile-time error | Hides                          |
+                         |--------------------------------|--------------------------------|
+NOTE: Instance Method (aka non-static method) thus, conclusion : static-static=hide, Non-Static-Non-Static=@Override, others=error
+
+
+[]    public class random extends apple{
+[]        @Override                         <--@Overriding non-static method
+[]        public void num(int n){
+[]            System.out.println("Hi "+n);
+[]        }
+[]        public static void main(String [] args){
+[]            random obj = new random();
+[]            obj.num(10);
+[]        }
+[]    }
+[]    class apple{
+[]        public void num(int n){
+[]            n++;
+[]        }
+[]    }
+
+
+====== CALLING INIT() IN ANOTHER INIT() ======
+You can also call a different constructor from the inside of another constructor. When you have multiple constructors
+(init) for a single class, you can use 'this(arg0, arg1, ...)' to call another constructor of your choosing, provided
+you do so in the first line of your constructor, and pass in the arguments that the 'wanted' constructor requires.
+
+[]    class Foo {
+[]        public Foo() {
+[]            this("String value. This init calls the below init");
+[]            //just like creating/init an obj in python: obj1 = Foo(params_of_init)
+[]        }
+[]
+[]        public Foo(String VAL1) {
+[]            // Do something with VAL1
+[]        }
+[]    }
+
+====== CALLING CONSTRUCTORS IN SUPERCLASSES ====== // ~!super()
+In Java a class can extend another class. When a class extends another class it is also said to "inherit" from the class
+it extends. The class that extends is called the subclass, and the class being extended is called the superclass.
+
+[]    super(args)
+
+NOTE: In Java, child class DOES NOT automatically inherit parent's __init__(), but in Python, they inherit it automatically.
+
+--- Vehicle.java ---
+[]    public class Vehicle {
+[]        private String regNo = null;
+[]
+[]        public Vehicle(String no) {
+[]            this.regNo = no;
+[]        }
+[]    }
+
+--- Car.java ---
+[]    public class Car extends Vehicle {
+[]        private String brand = null;
+[]
+[]        public Car(String br, String no) {   <-- take in additional param for parent init()
+[]            super(no);                       <-- calling parent init & passing in required args
+[]            this.brand = br;                     In Python: Vehicle.__init__(self, args..)
+[]        }                                               or: super().__init__(args..)
+[]    }
+
+More on constructors: http://tutorials.jenkov.com/java/constructors.html
+
+
+
+============================================================================================================================================ ~!INHERITANCE /OOP
+// OOP
+subclass (child) - the class that inherits from another class
+superclass (parent) - the class being inherited from
+
+To inherit from a class, use the 'extends' keyword.
+
+NOTE: Java doesn't allow multiple inheritance for classes, but Python allows lol.
+      (See tag_interface for multiple inheritance)
+NOTE: 'final' classes doesn't allow inheritance.
+NOTE: In Java, child class DOES NOT automatically inherit parent's __init__(), but in Python, they inherit it automatically.
+      In Java, use 'super(args);' to call the parent's init() and pass in the required args. (ref: tag_super())
+NOTE: The constructor of a base class is always executed before the constructor of the class you are instantiating.
+
+--- Vehicle.java ---
+[]    class Vehicle {
+[]        protected String brand = "Ford";        // Vehicle attribute
+[]        public void honk() {                    // Vehicle method
+[]            System.out.println("Tuut, tuut!");
+[]        }
+[]    }
+
+--- Car.java ---
+[]    class Car extends Vehicle {
+[]    // NOTE: can also be 'class Car extends OtherClass implements FirstInterface, SecondInterface'
+[]    //       inheritance & implementation going on at the same time.
+[]        private String modelName = "Mustang";    // Car attribute
+[]        public static void main(String[] args) {
+[]
+[]            // Create a myCar object
+[]            Car myCar = new Car();
+[]
+[]            // Call the honk() method (from the Vehicle class) on the myCar object
+[]            myCar.honk();
+[]
+[]            // Display the value of the brand attribute (from the Vehicle class) and the value of the modelName from the Car class
+[]            System.out.println(myCar.brand + " " + myCar.modelName);
+[]        }
+[]    }
+[]    >>> Tuut, tuut!
+[]    >>> Ford Mustang
+
+
+We set the brand attribute in Vehicle to a 'protected' (accessible in the same package and subclasses (inheritance classes))
+If it was set to 'private', the Car class would not be able to access it.
+
+NOTE: See also tag_nestedclassinheritance
+
+
+
+
+============================================================================================================================================ ~!INNER CLASSES /OOP
+// OOP ~!innerclasses ~!nestedclasses
+
+In Java, it is also possible to nest classes (a class within a class). The purpose of nested classes is to group classes that
+belong together, which makes your code more readable and maintainable. An inner class can be:
+
+    - public / default /  private / protected
+    - final / static / abstract
+
+
+NOTE: Usually, you must first create an obj of the outer class, then from the outer obj, extend/create the inner obj.
+      []    Outer OBJout = new Outer(args);
+      []    Outer.Inner OBJin = OBJout.new Inner(args);
+      []    // Obj in an obj.
+
+NOTE>>
+Private : ONLY accessible within itself, or top-level class (OuterClass) of nested classes.
+
+Final   : Inner class cannot be inherited.
+
+Static  : Inner class can be accessed without first creating an object of the outer class.
+         *Obj creation: 'Outer.Inner obj = new Outer.Inner(args);'
+                    or: 'Inner obj = new Inner(args);'
+
+          NOTE: If the inner class itself, its attributes and methods are ALL 'static', they can be accessed directly.
+         *Access: 'inner.StaticMethod(args);'
+                  'inner.Attr;'
+
+
+Some example code:
+[]    class OuterClass {
+[]        int x = 10;
+[]
+[]        class InnerClass {
+[]            int y = 5;
+[]        }
+[]    }
+[]
+[]    public class Main {
+[]        public static void main(String[] args) {
+[]            OuterClass myOuter = new OuterClass();
+[]            OuterClass.InnerClass myInner = myOuter.new InnerClass();
+[]            System.out.println(myInner.y + myOuter.x);
+[]        }
+[]    }
+[]
+[]    >>> 15
+
+More example code:
+[]    class OuterClass {
+[]        int x = 10;
+[]
+[]        static class InnerClass {
+[]            int y = 5;
+[]        }
+[]    }
+[]
+[]    public class Main {
+[]        public static void main(String[] args) {
+[]            OuterClass.InnerClass myInner = new OuterClass.InnerClass();
+[]            System.out.println(myInner.y);
+[]        }
+[]    }
+[]
+[]    >>> 5
+
+
+
+================================================================================INHERITANCE OF NESTED CLASSES
+// OOP ~!nestedclassinheritance ~!innerclassinheritance ~!nestedinheritance
+There are a few cases:
+
+1. In Same OuterClass: InnerOne extends InnerTwo
+    []
+    []    class OuterClass
+    []    {
+    []        class InnerClassOne
+    []        {
+    []            int x = 10;
+    []            void methodOfInnerClassOne()
+    []            {
+    []                System.out.println("From InnerClassOne");
+    []            }
+    []        }
+    []
+    []        class InnerClassTwo extends InnerClassOne
+    []        {
+    []            //One Inner Class can extend another inner class
+    []        }
+    []    }
+
+
+2. (Static/Non-Static) InnerClass extended by other OuterClass
+    []
+    []    class OuterClass
+    []    {
+    []        static class InnerStatic {}
+    []        class InnerNonStatic {}
+    []    }
+    [] ------------------------------------------------------------
+    []    class AnotherClassOne extends OuterClass.InnerStatic
+    []    {
+    []        //static nested class can be referred by outer class name
+    []      // Belongs to OuterClass class, ref directly.
+    []    }
+    [] ------------------------------------------------------------
+    []    class AnotherClassTwo extends OuterClass.InnerNonStatic
+    []    {
+    []        public AnotherClassTwo()       <-- constructor
+    []        {
+    []            new OuterClass().super();  //accessing super class constructor through OuterClass instance
+    []                                     // Belongs to OuterClass object, ref through Outerclass obj.
+    []        }
+    []    }
+
+
+                  belongs to
+         |--------------------------|
+         |                |---------+-----------------|
+3. AnotherOuter extends Outer, AnotherInner extends Inner
+    []    class OuterClass
+    []    {
+    []        int x;
+    []        void methodOfOuterClass()
+    []        {
+    []            System.out.println("From OuterClass");
+    []        }
+    []
+    []        //Class as a member
+    []        class InnerClass
+    []        {
+    []            int y;
+    []        }
+    []    }
+    [] ------------------------------------------------------------
+    []    class AnotherClass extends OuterClass
+    []    {
+    []        // Only fields and methods are inherited.
+    []        // To use inner class properties,
+    []        // it's inner class must extend inner class of it's super class
+    []        class AnotherInnerClass extends InnerClass
+    []        {
+    []            //Inner Class of AnotherClass extends Inner Class of OuterClass
+    []        }
+    []    }
+    [] ------------------------------------------------------------
+    []    public class Main
+    []    {
+    []        public static void main(String args[])
+    []        {
+    []            AnotherClass anotherClass = new AnotherClass();  //creating AnotherClass Object
+    []            System.out.println(anotherClass.x);    //accessing inherited field x from OuterClass
+    []            anotherClass.methodOfOuterClass();    //calling inherited method from OuterClass
+    []
+    []           //Using the properties of InnerClass
+    []            AnotherClass.AnotherInnerClass anotherInnerClass = anotherClass.new AnotherInnerClass();
+    []            System.out.println(anotherInnerClass.y);  //accessing inherited field y from InnerClass
+    []        }
+    []    }
+
+
+
+
+============================================================================================================================================ ~!ENCAPSULATION /OOP
+// OOP
+Encapsulation is to make sure that "sensitive" data is hidden from users, an outside class has no access to it.
+To achieve this, you must:
+    - declare class variables/attributes as private
+    - provide public get and set methods to access and update the value of a private variable
+
+--- Person.java ---
+[]    public class Person {
+[]        private String name; // private = restricted access
+[]
+[]        // Getter
+[]        public String getName() {
+[]            return name;
+[]        }
+[]
+[]        // Setter
+[]        public void setName(String newName) {
+[]            this.name = newName;
+[]        }
+[]    }
+
+--- Main.java ---
+[]    public class Main {
+[]        public static void main(String[] args) {
+[]            Person myObj = new Person();
+[]            myObj.setName("John"); // Set the value of the name variable to "John"
+[]            System.out.println(myObj.getName());
+[]        }
+[]    }
+[]    >>> John
+
+
+
+============================================================================================================================================ ~!POLYMORPHISM /OOP
+// OOP
+Polymorphism means "many forms", and it occurs when we have many classes that are related to each other by inheritance.
+Previously, we mentioned that inheritance lets us inherit attributes and methods from another class. Polymorphism uses
+those methods to perform different tasks. This allows us to perform a single action in different ways.
+
+For example, think of a superclass called Animal that has a method called animalSound(). Subclasses of Animals could be
+Pigs, Cats, Dogs, Birds - And they also have their own implementation of an animal sound (the pig oinks, and the cat
+meows, etc.):
+
+[]    class Animal {
+[]        public void animalSound() {
+[]            System.out.println("The animal makes a sound");
+[]        }
+[]    }
+[]
+[]    class Pig extends Animal {
+[]        public void animalSound() {
+[]            System.out.println("The pig says: wee wee");
+[]        }
+[]    }
+[]
+[]    class Dog extends Animal {
+[]        public void animalSound() {
+[]            System.out.println("The dog says: bow wow");
+[]        }
+[]    }
+[]
+[]    class Main {
+[]        public static void main(String[] args) {
+[]            Animal myAnimal = new Animal();
+[]            Animal myPig = new Pig();
+[]            Animal myDog = new Dog();
+[]            myAnimal.animalSound();
+[]            myPig.animalSound();
+[]            myDog.animalSound();
+[]        }
+[]    }
+
+NOTE: Polymorphism. A variable of a supertype can refer to a subtype object. An object of a
+      subtype can be used wherever its supertype value is required. [Concept: PECS]
+
+      GeometricObject obj1 = new Circle();
+      ^^^^^^^^^^^^^^^            ^^^^^^^^
+      Parent                     Child
+
+      Fruit f = new Apple();
+
+
+
+
+============================================================================================================================================ ~!ABSTRACTION /OOP
+// OOP
+Data abstraction is the process of hiding certain details and showing only essential information to the user.
+Why? To achieve security - hide certain details and only show the important details of an object.
+     (users only see the abstract class, not the inherited subclass, thus info is hidden)
+
+NOTE: Not all members of an abstract class has to be abstract. Another by default 'abstract' class type is interface. See tag_interface
+
+ - Abstract class: is a restricted class that cannot be used to create objects (to access it, it must be inherited
+                   from another class).
+ - Abstract method: can only be used in an abstract class, and it does not have a body. The body is provided by the
+                   subclass (inherited from).
+
+NOTE: Abstract Class just like other classes can have constructors, just that they can't be called through the 'new' keyword.
+      They must be called in subclasses using the super() method, or automatically called by java when calling the subclass' constructor.
+      Ref: https://www.baeldung.com/java-abstract-classes-constructors
+
+
+[]    abstract class Animal {
+[]        public abstract void animalSound();
+[]        public void sleep() {
+[]            System.out.println("Zzz");
+[]        }
+[]    }
+[]    ...
+[]    Animal myObj = new Animal();  // will generate an error
+
+
+[]    // Abstract class
+[]    abstract class Animal {
+[]        // Abstract method (does not have a body)
+[]        public abstract void animalSound();
+[]        // Regular method
+[]        public void sleep() {             <-- Not all members of abstract class has no be abstract
+[]            System.out.println("Zzz");
+[]        }
+[]    }
+[] ---------------------------------------------------------
+[]    // Subclass (inherit from Animal)
+[]    class Pig extends Animal {
+[]        public void animalSound() {
+[]            // The body of animalSound() is provided here
+[]            System.out.println("The pig says: wee wee");
+[]        }
+[]    }
+[] ---------------------------------------------------------
+[]    class Main {
+[]        public static void main(String[] args) {
+[]            Pig myPig = new Pig(); // Create a Pig object
+[]            myPig.animalSound();
+[]            myPig.sleep();
+[]        }
+[]    }
+[]    >>> The pig says: wee wee
+[]    >>> Zzz
+
+
+
+============================================================================================================================================ ~!INTERFACES /OOP
+// OOP ~!multipleinheritance
+
+An interface is a completely "abstract class" that is used to GROUP RELATED METHODS WITH EMPTY BODIES, no {}.
+Like abstract classes, interfaces cannot be used to create objects. There are a number of situations in software
+engineering when it is important for disparate groups of programmers to agree to a "contract" that spells out how
+their software interacts. Each group should be able to write their code without any knowledge of how the other
+group's code is written. Generally speaking, interfaces are such contracts.
+
+Interfaces can have multiple implementations (multiple inheritance). Interface methods do not have a body - the
+body is provided by the "implement" class.
+
+NOTE: On implementation of an interface, you must override ALL of its methods
+(provide body) (required args must be pre-defined in interface methods)
+
+NOTE: Use 'implements' to define interface body. Use 'extends' to extend interface bodies. Codes that implement/rely
+      on the old interface won't be affected.    (Interface1 extends Interface2)
+NOTE: methods are by default 'PUBLIC', 'ABSTRACT' ONLY
+NOTE: attributes are by default 'PUBLIC', 'STATIC', 'FINAL' ONLY
+NOTE: An interface cannot contain a constructor (as it cannot be used to create objects)
+NOTE: Inner interface of nested interfaces/classes are by default 'PUBLIC', 'STATIC'. but they can also use any modifiers.
+      More at: https://cs-fundamentals.com/java-programming/java-static-nested-or-inner-interfaces
+      Inner interfaces in the following top level bodies can be accessed via:
+          1. In classes   : 'class ... implements Outerclass.InterfaceName'
+          2. In interface : 'class ... implements InterfaceName' (direct)
+
+
+  *In the real source code, if all below code are in the same file, class Main should be placed first (at the top)
+   before interfaces & class Democlass, else 'ERROR: can't find main(String[]) method in class: FirstInterface'
+
+MULTIPLE IMPLEMENTATIONS
+[]
+[]    interface FirstInterface {
+[]        int x = 0;                       // interface attribute declared                    PUBLIC STATIC FINAL
+[]        public void myMethod();          // interface method (does not have a body, no {})  PUBLIC ABSTRACT
+[]    }
+[]
+[]    interface SecondInterface {
+[]        public int myOtherMethod(int n); // interface method can have return type & required args
+[]    }
+[]
+[]    class DemoClass implements FirstInterface, SecondInterface {    <-- MULTIPLE IMPLEMENTATIONS
+[]    // NOTE: can also be 'class DemoClass extends OtherClass implements FirstInterface, SecondInterface'
+[]    //       inheritance & implementation going on at the same time.
+[]        public void myMethod() {
+[]            System.out.println("Some text..");
+[]        }
+[]        public int myOtherMethod(int n) {
+[]            return n;
+[]        }
+[]    }
+[]
+[]    class Main {
+[]        public static void main(String[] args) {
+[]            DemoClass myObj = new DemoClass();
+[]            myObj.myMethod();
+[]            System.out.println(myObj.myOtherMethod(5));
+[]        }
+[]    }
+[]    >>> Some text..
+[]    >>> 5
+
+
+
+
+
+============================================================================================================================================ ~!ENUMERATES /OOP
+// OOP
+
+Reference: https://docs.oracle.com/javase/tutorial/java/javaOO/enum.html
+Enum is short for "enumerations", which means "specifically listed". An enum is a special "class" that represents
+a group of constants (unchangeable variables, like final variables). An enum can, just like a class, have attributes
+and methods. The only difference is that enum constants are PUBLIC, STATIC and FINAL (unchangeable - cannot be overridden).
+Why And When To Use Enums? Use enums when you have values that you know aren't going to change, like month days, colors, etc.
+
+NOTE: An enum class cannot be used to create objects, and it cannot extend other classes (but it can implement interfaces).
+NOTE: Enum constants must be in FULL CAPITAL LETTERS.
+NOTE: *TREAT CONSTANTS AS ATTRIBUTES OF A CLASS. i.e.:
+       from outside class: 'Planet.EARTH.method()'
+       from same enum class: 'EARTH.method()'
+       Detailed example: 'OptimizedForPlanet.java'
+
+NOTE: Enum constants can also have personal attributes, but you have to pass them to the constructor to be assigned to the 'obj'.
+      Constructor is required. The constructor for an enum type must be package-private (default) or private access. It automatically
+      creates the constants 'obj' that are defined at the beginning of the enum body (template). You cannot invoke an enum
+      constructor yourself. It'll be invoked automatically when you call the enum's attribute (i.e. EARTH.mass)
+      []
+      []    public enum Planets {
+      []        EARTH   (5.976e+24, 6.37814e6),                   <-- constants' template must be defined before anything.
+      []        MARS    (6.421e+23, 3.3972e6);
+      []        private final double mass;       // in kilograms  <-- enum obj's attributes (values assigned when constructor called)
+      []        private final double radius;     // in meters
+      []        Planet(double mass, double radius) {              <-- enum constructor (args arranged according to template)
+      []            this.mass = mass;
+      []            this.radius = radius;
+      []        }
+      []    }
+
+Some very basic enum code
+[]    public enum Day {
+[]        SUNDAY, MONDAY, TUESDAY, WEDNESDAY,
+[]        THURSDAY, FRIDAY, SATURDAY                             <-- No ';' for only enum constants
+[]    }
+[] ----------------------------------------------------Class to utilise enum Day
+[]    public class EnumTest {
+[]        Day day;                                               <-- Day object as class attribute
+[]        public EnumTest(Day obj) {
+[]            this.day = obj;
+[]        }
+[]        public void tellItLikeItIs() {
+[]            switch (day) {
+[]                case MONDAY:
+[]                    System.out.println("Mondays are bad.");
+[]                    break;
+[]                default:
+[]                    System.out.println("Midweek days are so-so.");
+[]                    break;
+[]            }
+[]        }
+[]        public static void main(String[] args) {
+[]            EnumTest firstDay = new EnumTest(Day.MONDAY);      <--NOTE: call by 'enumClass.constantName' from an outside class
+[]            firstDay.tellItLikeItIs();
+[]        }
+[]    }
+[] ----------------------------------------------------Output
+[]    >>> Mondays are bad.
+
+
+Each enum constant is declared with values for the mass and radius parameters. These values are passed to the
+constructor when the constant is created. Java requires that the constants be defined first, prior to any fields
+or methods. Also, when there are fields and methods, the list of enum constants must end with a semicolon ';'.
+NOTE: The constructor for an enum type must be package-private or private access. It automatically creates the
+constants that are defined at the beginning of the enum body. You cannot invoke an enum constructor yourself.
+
+In addition to its properties and constructor, Planet has methods that allow you to retrieve the surface gravity
+and weight of an object on each planet. Here is a sample program that takes your weight on earth (in any unit)
+and calculates and prints your weight on all of the planets (in the same unit):
+
+
+[]    public enum Planet {
+[]        MERCURY (3.303e+23, 2.4397e6),                     <-- constants' template must be defined before anything.
+[]        VENUS   (4.869e+24, 6.0518e6),                         (planetMass, planetRadius)
+[]        EARTH   (5.976e+24, 6.37814e6),
+[]        MARS    (6.421e+23, 3.3972e6),
+[]        JUPITER (1.9e+27,   7.1492e7),
+[]        SATURN  (5.688e+26, 6.0268e7),
+[]        URANUS  (8.686e+25, 2.5559e7),
+[]        NEPTUNE (1.024e+26, 2.4746e7);                     <-- with ';' for enum constants with methods.
+[]
+[]        private final double Pmass;   // in kilograms      <-- enum obj's attributes (values assigned when constructor called)
+[]        private final double Pradius; // in meters
+[]
+[]        Planet(double pmass, double pradius) {             <-- enum constructor (args arranged according to template)
+[]            this.Pmass = pmass;
+[]            this.Pradius = pradius;
+[]        }
+[]
+[]        public static final double G = 6.67300E-11;        <-- universal gravitational constant (m3 kg-1 s-2)
+[]
+[]        double surfaceGravity() {                          <-- return planet's surface g value: GM/r^2
+[]            return G * Pmass / (Pradius * Pradius);
+[]        }
+[]        double surfaceWeight(double YourMass) {            <-- return YourWeight: w=mg
+[]            return YourMass * surfaceGravity();
+[]        }
+[]        public static void main(String[] args) {
+[]            if (args.length != 1) {
+[]                System.err.println("Usage: java Planet <earth_weight>");
+[]                System.exit(-1);
+[]            }
+[]            double YourEarthWeight = Double.parseDouble(args[0]);
+[]            double YourMass = YourEarthWeight/EARTH.surfaceGravity();      <--NOTE: call by 'constantName' from inside enum class itself.
+[]            for (Planet p : Planet.values())                               <--NOTE: enumClassName.values() return an array of enum constants.
+[]               System.out.printf("Your weight on %s is %f%n",
+[]                                 p, p.surfaceWeight(YourMass));
+[]            System.out.println("\n\n" +EARTH.Pmass + " " + EARTH.Pradius); <--NOTE: constant's attributes can be accessed like this.
+[]        }
+[]    }
+[]
+[]    ... javac Planet.java
+[]    ... java Planet 175
+[]    >>> Your weight on MERCURY is 66.107583
+[]    >>> Your weight on VENUS is 158.374842
+[]    >>> Your weight on EARTH is 175.000000
+[]    >>> Your weight on MARS is 66.279007
+[]    >>> Your weight on JUPITER is 442.847567
+[]    >>> Your weight on SATURN is 186.552719
+[]    >>> Your weight on URANUS is 158.397260
+[]    >>> Your weight on NEPTUNE is 199.207413
+[]    >>>
+[]    >>>
+[]    >>> 5.976E24 6378140.0
+
+
+
+
+============================================================================================================================================ ~!ITERATORS /OOP
+// OOP ~!iterables
+
+Classes that implement the 'Iterable' interface & can be converted to 'Iterators' (see link below: Iterable)
+Interface Iterable: https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html
+Interface Iterator: https://docs.oracle.com/javase/8/docs/api/java/util/Iterator.html
+
+
+Iterators are designed to easily change the collections that they loop through. The remove() method can remove items
+from a collection while looping.
+NOTE: Trying to remove items using a for loop or a for-each loop would not work correctly because the collection is
+changing size at the same time that the code is trying to loop. (for/for-each loop requires pre-defined loop size)
+>>> Use while loop.
+NOTE: An iterator object can only be iterated through once.
+NOTE: User-defined class objects that needs to be converted to Iterators must implements both the 'Iterable' & 'Iterator'
+      interface: https://www.geeksforgeeks.org/java-implementing-iterator-and-iterable-interface/
+
+[]    import java.util.ArrayList;
+[]    import java.util.Iterator;
+[]
+[]    public class Main {
+[]        public static void main(String[] args) {
+[]            ArrayList<Integer> numbers = new ArrayList<Integer>();  // create a collection
+[]
+[]            numbers.add(12);
+[]            numbers.add(8);
+[]            numbers.add(2);
+[]            numbers.add(23);
+[]
+[]            Iterator<Integer> it = numbers.iterator();   // creating an interator form collection obj
+[]
+[]            while(it.hasNext()) {                        // returns true if there's still a 'next-value' in iterator
+[]                Integer i = it.next();                   // wrapper class wrapping iterator elems
+[]                if(i < 10) {
+[]                    it.remove();                         //NOTE: remove elem from Collection (Iterator is just an 'outer cover')
+[]                }
+[]            }
+[]            System.out.println(numbers);                 // >>> [12, 23]
+[]        }
+[]    }
+
+
+
+
+=====================================================================================================================================================================
+// ~!endofOOP =======================================================================================================================================================
+=====================================================================================================================================================================
