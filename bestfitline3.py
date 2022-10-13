@@ -428,8 +428,8 @@ def best_fit_line():
         iny = np.array([y for y in yval])
         siz0 = np.array([5 for x in range(len(xval))])
 
-        cay = np.array([y for y in YCAL])       #calc-ed y vals, same x as input
-        plt.scatter(inx, iny, siz0, color='orange', label='Entries')      # input
+        cay = np.array([y for y in YCAL])       #calc-ed y vals, same x as input here
+        plt.scatter(inx, iny, siz0, color='orange', label='Entries')      # input here
         plt.plot(inx, cay, '-', label='Fits')        # calc-ed    To add marker paste: , marker='.', ms=5
 
         if len(xuk) != 0:                            # calc-ed unknowns here
